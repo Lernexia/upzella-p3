@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import { jobRoutes } from './routes/jobs.routes';
 import { errorHandler } from './middleware/errorHandler';
@@ -50,6 +51,20 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 
 // Security middleware
 app.use(helmet());
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: {
+    error: 'Too many requests from this IP, please try again later.',
+    retryAfter: '15 minutes'
+  },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+app.use('/api',limiter);
 
 // CORS
 app.use(cors({

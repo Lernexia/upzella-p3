@@ -233,15 +233,7 @@
     --z-loading: 90;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --background: #0a0a0a;
-      --foreground: #ededed;
-      --text-primary: #ededed;
-      --text-secondary: #d1d5db;
-      --text-muted: #9ca3af;
-    }
-  }
+
 }
 
 @layer base {
@@ -273,7 +265,7 @@
     width: 95%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1.5rem 0;
+    padding: 0;
   }
 
   /* Upzella Layout Classes */

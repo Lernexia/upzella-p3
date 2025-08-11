@@ -4,6 +4,7 @@ import "./globals.css";
 import ToastContainer from '../components/ui-components/toast/ToastContainer';
 import { ToastProvider } from '../context/ToastContext';
 import { AuthProvider } from "@/context/AuthContext";
+import { LayoutWrapper } from '@/components/LayoutWrapper';
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -43,13 +44,15 @@ export default function RootLayout({
     <html lang="en">
       <body
         suppressHydrationWarning
-        className={`${poppins.variable} ${outfit.variable} ${inter.variable} ${montserrat.variable} antialiased`}
+        className={`${poppins.variable} ${outfit.variable} ${inter.variable} ${montserrat.variable} relative antialiased`}
       >
 
-        <main className="min-h-screen">
+        <main className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 relative">
           <ToastProvider>
             <AuthProvider>
-              {children}
+              <LayoutWrapper>
+                {children}
+              </LayoutWrapper>
             </AuthProvider>
             <ToastContainer />
           </ToastProvider>

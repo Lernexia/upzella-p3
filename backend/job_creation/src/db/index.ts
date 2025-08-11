@@ -94,70 +94,119 @@ export interface Database {
         Row: {
           id: string;
           company_id: string;
+          role_name: string;
           title: string;
           description: string;
           skills_required: string[];
           work_type: string[];
-          employment_type: string;
-          experience_min: number;
-          experience_max: number;
+          employment_type: string[];
+          seniority_level: string[];
+          location_details: {
+            location_country?: string;
+            location_state?: string;
+            location_city?: string;
+            location_pin_code?: string;
+          };
+          salary_details: {
+            salary_currency: 'USD' | 'INR';
+            salary_from?: number;
+            salary_to?: number;
+            salary_period: 'per hour' | 'per month' | 'per annum';
+          };
+          experience_details: {
+            experience_min: number;
+            experience_max: number;
+          };
+          compensation?: string[];
           resume_threshold: number;
+          resume_score_weightage_details: Array<{
+            resume_section: string;
+            resume_criteria: string;
+            resume_weightage: number;
+            reason: string;
+          }>;
+          original_job_description_text?: string;
+          status: string;
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id?: string;
           company_id: string;
+          role_name: string;
           title: string;
           description: string;
           skills_required: string[];
           work_type: string[];
-          employment_type: string;
-          experience_min: number;
-          experience_max: number;
+          employment_type: string[];
+          seniority_level: string[];
+          location_details?: {
+            location_country?: string;
+            location_state?: string;
+            location_city?: string;
+            location_pin_code?: string;
+          };
+          salary_details?: {
+            salary_currency?: 'USD' | 'INR';
+            salary_from?: number;
+            salary_to?: number;
+            salary_period?: 'per hour' | 'per month' | 'per annum';
+          };
+          experience_details?: {
+            experience_min: number;
+            experience_max: number;
+          };
+          compensation?: string[];
           resume_threshold?: number;
+          resume_score_weightage_details?: Array<{
+            resume_section: string;
+            resume_criteria: string;
+            resume_weightage: number;
+            reason: string;
+          }>;
+          original_job_description_text?: string;
+          status?: string;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           id?: string;
           company_id?: string;
+          role_name?: string;
           title?: string;
           description?: string;
           skills_required?: string[];
           work_type?: string[];
-          employment_type?: string;
-          experience_min?: number;
-          experience_max?: number;
+          employment_type?: string[];
+          seniority_level?: string[];
+          location_details?: {
+            location_country?: string;
+            location_state?: string;
+            location_city?: string;
+            location_pin_code?: string;
+          };
+          salary_details?: {
+            salary_currency?: 'USD' | 'INR';
+            salary_from?: number;
+            salary_to?: number;
+            salary_period?: 'per hour' | 'per month' | 'per annum';
+          };
+          experience_details?: {
+            experience_min?: number;
+            experience_max?: number;
+          };
+          compensation?: string[];
           resume_threshold?: number;
+          resume_score_weightage_details?: Array<{
+            resume_section: string;
+            resume_criteria: string;
+            resume_weightage: number;
+            reason: string;
+          }>;
+          original_job_description_text?: string;
+          status?: string;
           created_at?: string;
           updated_at?: string;
-        };
-      };
-      resume_scoring_weights: {
-        Row: {
-          id: string;
-          job_id: string;
-          section_name: string;
-          criteria_description?: string;
-          weightage: number;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          job_id: string;
-          section_name: string;
-          criteria_description?: string;
-          weightage: number;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          job_id?: string;
-          section_name?: string;
-          criteria_description?: string;
-          weightage?: number;
-          created_at?: string;
         };
       };
       ai_models: {

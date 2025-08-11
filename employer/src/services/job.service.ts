@@ -4,44 +4,83 @@ const supabase = createClient();
 
 export interface CreateJobRequest {
   company_id: string;
+  role_name: string;
   title: string;
   description: string;
   skills_required: string[];
   work_type: string[];
-  employment_type: string;
-  experience_min: number;
-  experience_max: number;
-  resume_threshold: number;
-  resume_scoring: Array<{
-    section_name: string;
-    criteria_description?: string;
-    weightage: number;
+  employment_type: string[];
+  seniority_level: string[];
+  location_details?: {
+    location_country?: string;
+    location_state?: string;
+    location_city?: string;
+    location_pin_code?: string;
+  };
+  salary_details?: {
+    salary_currency: 'USD' | 'INR';
+    salary_from?: number;
+    salary_to?: number;
+    salary_period?: 'per hour' | 'per month' | 'per annum';
+  };
+  experience_details: {
+    experience_min: number;
+    experience_max: number;
+  };
+  compensation?: string[];
+  resume_threshold?: number;
+  resume_score_weightage_details: Array<{
+    resume_section: string;
+    resume_criteria: string;
+    resume_weightage: number;
+    reason: string;
   }>;
-  original_job_description_text?: string; // For storing AI-extracted text
+  status?: 'draft' | 'published' | 'paused' | 'closed';
+  original_job_description_text?: string;
 }
 
 export interface Job {
   id: string;
   company_id: string;
+  role_name: string;
   title: string;
   description: string;
   skills_required: string[];
   work_type: string[];
-  employment_type: string;
-  experience_min: number;
-  experience_max: number;
+  employment_type: string[];
+  seniority_level: string[];
+  location_details?: {
+    location_country?: string;
+    location_state?: string;
+    location_city?: string;
+    location_pin_code?: string;
+  };
+  salary_details?: {
+    salary_currency: 'USD' | 'INR';
+    salary_from?: number;
+    salary_to?: number;
+    salary_period?: 'per hour' | 'per month' | 'per annum';
+  };
+  experience_details: {
+    experience_min: number;
+    experience_max: number;
+  };
+  compensation?: string[];
   resume_threshold: number;
-  resume_scoring_weights: Array<{
-    section_name: string;
-    criteria_description: string;
-    weightage: number;
+  resume_score_weightage_details: Array<{
+    resume_section: string;
+    resume_criteria: string;
+    resume_weightage: number;
+    reason: string;
   }>;
+  status: 'draft' | 'published' | 'paused' | 'closed';
+  original_job_description_text?: string;
   created_at: string;
   updated_at: string;
 }
 
 export class JobService {
-  private static readonly API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001/api';
+  private static readonly API_BASE_URL = process.env.NEXT_PUBLIC_JOB_CREATION_API_URL || 'http://localhost:3001/api';
 
   private static async getAuthToken(): Promise<string> {
     const { data: { session } } = await supabase.auth.getSession();

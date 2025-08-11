@@ -69,3 +69,4 @@ export { default as FaceIcon } from './FaceIcon';
 export { default as AudioIcon } from './AudioIcon';
 export { default as TabSwitchIcon } from './TabSwitchIcon';
 export { default as CurrencyIcon } from './CurrencyIcon';
+export { CameraIcon } from './CameraIcon';

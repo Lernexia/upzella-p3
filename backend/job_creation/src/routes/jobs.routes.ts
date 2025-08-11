@@ -1,8 +1,24 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import { jobsController } from '../controllers/jobs.controller';
 import { authenticateUser } from '../middleware/auth';
 
 export const jobRoutes = Router();
+
+// Stricter rate limiting for AI extraction (more resource intensive)
+const rateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 AI extraction requests per 15 minutes
+  message: {
+    error: 'Too many AI extraction requests from this IP, please try again later.',
+    retryAfter: '15 minutes'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Moderate rate limiting for job creation/updates
+
 
 /**
  * @swagger
@@ -26,44 +42,98 @@ export const jobRoutes = Router();
  *           schema:
  *             type: object
  *             required:
+ *               - company_id
+ *               - job_name
+ *               - role_name
  *               - title
  *               - description
  *               - skills_required
  *               - work_type
  *               - employment_type
+ *               - seniority_level
  *               - experience_min
  *               - experience_max
- *               - resume_threshold
  *               - resume_scoring
  *             properties:
+ *               company_id:
+ *                 type: string
+ *                 format: uuid
+ *                 example: "123e4567-e89b-12d3-a456-426614174000"
+ *               job_name:
+ *                 type: string
+ *                 example: "Software Engineer Position"
+ *               role_name:
+ *                 type: string
+ *                 example: "Senior Full Stack Developer"
  *               title:
  *                 type: string
- *                 example: Backend Developer
+ *                 example: "Senior Full Stack Developer - React & Node.js"
  *               description:
  *                 type: string
- *                 example: We are looking for a skilled backend developer...
+ *                 example: "We are looking for a skilled full stack developer..."
  *               skills_required:
  *                 type: array
  *                 items:
  *                   type: string
- *                 example: ["Node.js", "PostgreSQL"]
+ *                 example: ["React", "Node.js", "TypeScript", "PostgreSQL"]
  *               work_type:
  *                 type: array
  *                 items:
  *                   type: string
+ *                   enum: ["Full-time", "Part-time", "Remote", "Hybrid", "On-site"]
  *                 example: ["Full-time", "Remote"]
  *               employment_type:
- *                 type: string
- *                 example: Permanent
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   enum: ["Permanent", "Contract", "Internship", "Freelance"]
+ *                 example: ["Permanent"]
+ *               seniority_level:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   enum: ["Entry Level", "Fresher", "Junior", "Senior", "Manager", "Director", "Executive"]
+ *                 example: ["Senior"]
  *               experience_min:
  *                 type: integer
- *                 example: 2
+ *                 example: 3
  *               experience_max:
  *                 type: integer
- *                 example: 5
+ *                 example: 7
+ *               salary_currency:
+ *                 type: string
+ *                 enum: ["INR", "USD"]
+ *                 default: "INR"
+ *                 example: "INR"
+ *               salary_from:
+ *                 type: number
+ *                 example: 800000
+ *               salary_to:
+ *                 type: number
+ *                 example: 1200000
+ *               salary_period:
+ *                 type: string
+ *                 enum: ["per annum", "per month", "per hour"]
+ *                 example: "per annum"
+ *               location_details:
+ *                 type: string
+ *                 example: "Bangalore, India (Remote available)"
+ *               compensation:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   enum: ["Medical Insurance", "Provident Fund", "Food Allowance", "House Allowance", "Transport Allowance", "Performance Bonus"]
+ *                 example: ["Medical Insurance", "Provident Fund"]
+ *               custom_compensation:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ["Gym Membership", "Learning Stipend"]
  *               resume_threshold:
  *                 type: integer
- *                 example: 60
+ *                 minimum: 0
+ *                 maximum: 100
+ *                 example: 65
  *               resume_scoring:
  *                 type: array
  *                 items:
@@ -71,20 +141,26 @@ export const jobRoutes = Router();
  *                   properties:
  *                     section_name:
  *                       type: string
- *                       example: Education
+ *                       enum: ["Education", "Experience", "Projects", "Certifications", "Skills", "Achievements"]
+ *                       example: "Education"
  *                     criteria_description:
  *                       type: string
- *                       example: Bachelor's degree in Computer Science
+ *                       example: "Bachelor's degree in Computer Science or related field"
  *                     weightage:
  *                       type: integer
+ *                       minimum: 1
+ *                       maximum: 100
  *                       example: 20
+ *               original_job_description_text:
+ *                 type: string
+ *                 example: "Original AI-extracted or uploaded job description text"
  *     responses:
  *       201:
  *         description: Job created successfully
  *       400:
  *         description: Validation error
  */
-jobRoutes.post('/', authenticateUser, jobsController.createJob);
+jobRoutes.post('/', rateLimiter, authenticateUser, jobsController.createJob);
 
 /**
  * @swagger
@@ -112,7 +188,7 @@ jobRoutes.post('/', authenticateUser, jobsController.createJob);
  *       400:
  *         description: Invalid text or extraction failed
  */
-jobRoutes.post('/ai-extract', authenticateUser, jobsController.aiExtractJob);
+jobRoutes.post('/ai-extract', rateLimiter, authenticateUser, jobsController.aiExtractJob);
 
 /**
  * @swagger
@@ -160,7 +236,7 @@ jobRoutes.get('/', authenticateUser, jobsController.getJobs);
  *       404:
  *         description: Job not found
  */
-jobRoutes.get('/:id', authenticateUser, jobsController.getJob);
+jobRoutes.get('/:id',rateLimiter,  authenticateUser, jobsController.getJob);
 
 /**
  * @swagger
@@ -190,7 +266,7 @@ jobRoutes.get('/:id', authenticateUser, jobsController.getJob);
  *       404:
  *         description: Job not found
  */
-jobRoutes.put('/:id', authenticateUser, jobsController.updateJob);
+jobRoutes.put('/:id', rateLimiter, authenticateUser, jobsController.updateJob);
 
 /**
  * @swagger
@@ -213,4 +289,4 @@ jobRoutes.put('/:id', authenticateUser, jobsController.updateJob);
  *       404:
  *         description: Job not found
  */
-jobRoutes.delete('/:id', authenticateUser, jobsController.deleteJob);
+jobRoutes.delete('/:id', rateLimiter, authenticateUser, jobsController.deleteJob);

@@ -49,7 +49,7 @@ export const logger = winston.createLogger({
     winston.format.colorize({ all: true }),
     logFormat
   ),
-  defaultMeta: { service: 'job-creation' },
+  defaultMeta: { service: 'user-management' },
   transports: [
     ...(process.env.NODE_ENV !== 'production'
       ? [

@@ -4,29 +4,41 @@ import { createError } from '../middleware/errorHandler';
 
 type JobInsert = Database['public']['Tables']['jobs']['Insert'];
 type JobRow = Database['public']['Tables']['jobs']['Row'];
-type ResumeScoringWeightInsert = Database['public']['Tables']['resume_scoring_weights']['Insert'];
-type ResumeScoringWeightRow = Database['public']['Tables']['resume_scoring_weights']['Row'];
 
 export interface CreateJobRequest {
   company_id: string;
+  role_name: string;
   title: string;
   description: string;
   skills_required: string[];
   work_type: string[];
-  employment_type: string;
-  experience_min: number;
-  experience_max: number;
+  employment_type: string[];
+  seniority_level: string[];
+  location_details?: {
+    location_country?: string;
+    location_state?: string;
+    location_city?: string;
+    location_pin_code?: string;
+  };
+  salary_details?: {
+    salary_currency: 'USD' | 'INR';
+    salary_from?: number;
+    salary_to?: number;
+    salary_period?: 'per hour' | 'per month' | 'per annum';
+  };
+  experience_details: {
+    experience_min: number;
+    experience_max: number;
+  };
+  compensation?: string[];
   resume_threshold?: number;
-  resume_scoring: {
-    section_name: string;
-    criteria_description?: string;
-    weightage: number;
+  resume_score_weightage_details: {
+    resume_section: string;
+    resume_criteria: string;
+    resume_weightage: number;
+    reason: string;
   }[];
-  original_job_description_text?: string; // For storing AI-extracted text
-}
-
-export interface JobWithScoring extends JobRow {
-  resume_scoring_weights: ResumeScoringWeightRow[];
+  original_job_description_text?: string;
 }
 
 export class JobsService {
@@ -37,17 +49,27 @@ export class JobsService {
         company_id: jobData.company_id 
       });
 
-      // Start a transaction by creating the job first
+      // Prepare compensation data - filter out empty strings
+      const compensation = (jobData.compensation || [])
+        .filter(comp => comp && comp.trim() !== '');
+
+      // Prepare the job insert data with new JSON structure
       const jobInsert: JobInsert = {
         company_id: jobData.company_id,
+        role_name: jobData.role_name,
         title: jobData.title,
         description: jobData.description,
         skills_required: jobData.skills_required,
         work_type: jobData.work_type,
         employment_type: jobData.employment_type,
-        experience_min: jobData.experience_min,
-        experience_max: jobData.experience_max,
-        resume_threshold: jobData.resume_threshold || 60
+        seniority_level: jobData.seniority_level,
+        location_details: jobData.location_details,
+        salary_details: jobData.salary_details,
+        experience_details: jobData.experience_details,
+        compensation: compensation.length > 0 ? compensation : undefined,
+        resume_threshold: jobData.resume_threshold || 65,
+        resume_score_weightage_details: jobData.resume_score_weightage_details,
+        original_job_description_text: jobData.original_job_description_text
       };
 
       const { data: job, error: jobError } = await supabase
@@ -59,25 +81,6 @@ export class JobsService {
       if (jobError) {
         logger.error('Job creation failed', jobError);
         throw createError(`Failed to create job: ${jobError.message}`, 400);
-      }
-
-      // Create resume scoring weights
-      const scoringWeights: ResumeScoringWeightInsert[] = jobData.resume_scoring.map(scoring => ({
-        job_id: job.id,
-        section_name: scoring.section_name,
-        criteria_description: scoring.criteria_description,
-        weightage: scoring.weightage
-      }));
-
-      const { error: scoringError } = await supabase
-        .from('resume_scoring_weights')
-        .insert(scoringWeights);
-
-      if (scoringError) {
-        // Cleanup: delete the job if scoring weights creation failed
-        await supabase.from('jobs').delete().eq('id', job.id);
-        logger.error('Resume scoring weights creation failed', scoringError);
-        throw createError(`Failed to create resume scoring weights: ${scoringError.message}`, 400);
       }
 
       logger.info('Job created successfully', { job_id: job.id });
@@ -106,14 +109,11 @@ export class JobsService {
     }
   }
 
-  async getJobById(jobId: string, companyId?: string): Promise<JobWithScoring | null> {
+  async getJobById(jobId: string, companyId?: string): Promise<JobRow | null> {
     try {
       let query = supabase
         .from('jobs')
-        .select(`
-          *,
-          resume_scoring_weights (*)
-        `)
+        .select('*')
         .eq('id', jobId);
 
       if (companyId) {
@@ -130,7 +130,7 @@ export class JobsService {
         throw createError(`Failed to fetch job: ${error.message}`, 500);
       }
 
-      return job as JobWithScoring;
+      return job;
     } catch (error) {
       logger.error('Get job service error', error);
       throw error;
@@ -260,10 +260,11 @@ export class JobsService {
       
       // Convert text to buffer
       const textBuffer = Buffer.from(jobDescriptionText, 'utf-8');
+      const bucketName = process.env.SUPABASE_STORAGE_BUCKET || 'company';
 
       // Upload to Supabase Storage using application/octet-stream to avoid MIME type restrictions
       const { data, error } = await supabase.storage
-        .from('company')
+        .from(bucketName)
         .upload(storagePath, textBuffer, {
           contentType: 'application/octet-stream',
           cacheControl: '3600',
