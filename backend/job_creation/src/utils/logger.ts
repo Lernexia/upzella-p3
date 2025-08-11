@@ -1,4 +1,14 @@
 import winston from 'winston';
+import fs from 'fs';
+import path from 'path';
+
+// Ensure logs folder exists (only in dev/local)
+if (process.env.NODE_ENV !== 'production') {
+  const logDir = path.join(process.cwd(), 'logs');
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir, { recursive: true });
+  }
+}
 
 // Define log levels
 const levels = {
@@ -30,6 +40,7 @@ const logFormat = winston.format.printf((info) => {
   return `${info.timestamp} ${info.level}: ${info.message}${meta}`;
 });
 
+// Create logger instance
 export const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   levels,
@@ -39,32 +50,34 @@ export const logger = winston.createLogger({
     logFormat
   ),
   transports: [
-    // File transport for errors
-    new winston.transports.File({
-      filename: 'logs/error.log',
-      level: 'error',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-      )
-    }),
-    // File transport for all logs
-    new winston.transports.File({
-      filename: 'logs/combined.log',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-      )
-    })
+    ...(process.env.NODE_ENV !== 'production'
+      ? [
+          new winston.transports.File({
+            filename: 'logs/error.log',
+            level: 'error',
+            format: winston.format.combine(
+              winston.format.timestamp(),
+              winston.format.json()
+            )
+          }),
+          new winston.transports.File({
+            filename: 'logs/combined.log',
+            format: winston.format.combine(
+              winston.format.timestamp(),
+              winston.format.json()
+            )
+          })
+        ]
+      : [])
   ]
 });
 
-// In non-production, add Console transport *once*
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
+// Always log to console in production (for Vercel)
+logger.add(
+  new winston.transports.Console({
     format: winston.format.combine(
       winston.format.colorize(),
       winston.format.simple()
     )
-  }));
-}
+  })
+);
