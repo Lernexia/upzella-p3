@@ -168,6 +168,7 @@ export interface Database {
           status?: string;
           created_at?: string;
           updated_at?: string;
+          
         };
         Update: {
           id?: string;

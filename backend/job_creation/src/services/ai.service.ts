@@ -67,14 +67,15 @@ class AIService {
       throw new Error('AI model not initialized. Set GOOGLE_AI_API_KEY and verify @google/generative-ai usage.');
     }
     const prompt = `
-You are an AI assistant that extracts structured job information from unstructured job descriptions.
+    You are an AI assistant that extracts structured job information from unstructured job descriptions.
 
-Given the following job description text, extract and return ONLY a valid JSON object with the following structure:
+TASK:
+Given the following job description text, return ONLY a valid JSON object (no extra text, no explanations) following EXACTLY this structure and rules:
 
 {
   "role_name": "Senior Software Engineer",
   "title": "Senior Software Engineer - Full Stack Development",
-  "description": "clean, formatted job description",
+  "description": "Clean, well-formatted job description text",
   "skills_required": ["React", "Node.js", "JavaScript", "TypeScript"],
   "work_type": ["remote", "hybrid"],
   "employment_type": ["full-time"],
@@ -87,8 +88,8 @@ Given the following job description text, extract and return ONLY a valid JSON o
   },
   "salary_details": {
     "salary_currency": "INR",
-    "salary_from": 800000,
-    "salary_to": 1200000,
+    "salary_from": ,
+    "salary_to": ,
     "salary_period": "per annum"
   },
   "experience_details": {
@@ -125,28 +126,35 @@ Given the following job description text, extract and return ONLY a valid JSON o
   ]
 }
 
-Rules:
-1. role_name: Specific role title (e.g., "Senior Software Engineer", "Digital Marketing Manager")
-2. title: Complete descriptive title combining role and specialization
-3. description: Clean, well-formatted job description text
-4. work_type: Array from ["remote", "hybrid", "onsite", "all"] -> this is the multiselect options
-5. employment_type: Array from ["part-time", "full-time", "contract", "internship", "freelance", "temporary"] -> this is the multiselect options
-6. seniority_level: Array from ["entry-level", "fresher", "junior", "senior", "manager", "director", "executive"] -> this is the multiselect options
-7. location_details: Object with country, state, city, pin_code (omit if not specified make it empty if not specified)
-8. salary_details: Object with currency ("USD" or "INR"), amount range, period, (default -> INR, and if only salary is specified in job description fill the salary from and to and period)
-9. experience_details: Object with min/max experience in years (required)
-10. compensation: null (no need to specifiy. Make it null)
-11. resume_score_weightage_details: Array of objects with section, criteria, weightage, reason -> (auto matically name the resume_section, and criteria and weightage based on the job description and role)
-12. resume_section values: ["Education", "Experience", "Projects", "Certifications", "Skills", "Achievements"]
-13. resume_weightage must sum to exactly 100
-14. skills_required: Specific technical/professional skills
-15. experience_min <= experience_max
-16. resume_threshold: 60-80 (default 65) -> based on the role and job description
+RULES:
+1. "role_name": Specific role title (e.g., "Senior Software Engineer", "Digital Marketing Manager").
+2. "title": Complete descriptive title combining role and specialization. For naming the job.
+3. "description": Clean, well-formatted job description text (remove irrelevant content).
+4. "work_type": Array from ["remote", "hybrid", "onsite", "all"] (multi-select). Default to ["remote"].
+5. "employment_type": Array from ["part-time", "full-time", "contract", "internship", "freelance", "temporary"] (multi-select). Default to ["full-time"].
+6. "seniority_level": Array from ["entry_level", "fresher", "junior", "senior", "manager"] (multi-select). Don't include unspecified levels. Default to ["junior", "senior"].
+7. "location_details": Object with keys: location_country, location_state, location_city, location_pin_code. If unspecified, leave values as empty strings.
+8. "salary_details": Object with keys: salary_currency ("USD" or "INR" - default INR), salary_from, salary_to, salary_period (e.g., "per annum"). Fill if salary is mentioned.
+9. "experience_details": Object with keys: experience_min, experience_max (required). Ensure min ≤ max.
+10. "compensation": Always return null.
+11. "resume_score_weightage_details": Array of objects, each containing resume_section, resume_criteria, resume_weightage, and reason. Sections must be auto-derived from the job description.
+12. Allowed "resume_section" values: ["Education", "Experience", "Projects", "Certifications", "Skills", "Achievements"].
+13. The sum of all resume_weightage values must equal exactly 100.
+14. "skills_required": List of specific technical or professional skills mentioned in the job description.
+15. "resume_threshold": Integer between 60 and 80 (default 65) — decide based on role and job description.
+
+IMPORTANT:
+- Follow the structure and field names exactly.
+- Do not add extra fields or omit required fields.
+- Default keys are: 'role_name', 'title', 'description', 'work_type', 'employment_type', 'seniority_level', 'experience_details', 'resume_score_weightage_details', 'skills_required', 'resume_threshold'. Can't leave out any of these fields and must adhere to the specified types and constraints. And don't let them be empty.
+- Return ONLY the JSON object — no explanations, no markdown, no extra text.
+- 
 
 Job Description Text:
 ${jobDescriptionText}
 
-Return ONLY the JSON object, no additional text or explanations:
+Return ONLY the JSON object:
+
 `;
 
    try {
@@ -190,7 +198,8 @@ Return ONLY the JSON object, no additional text or explanations:
       throw new Error('Invalid or missing employment_type in AI extraction');
     }
 
-    const validSeniorityLevels = ['entry-level', 'fresher', 'junior', 'senior', 'manager', 'director', 'executive'];
+    // Updated to match database constraints - removed director and executive, changed entry-level to entry_level
+    const validSeniorityLevels = ['entry_level', 'fresher', 'junior', 'senior', 'manager'];
     if (!Array.isArray(data.seniority_level) || data.seniority_level.some(s => !validSeniorityLevels.includes(s))) {
       throw new Error('Invalid or missing seniority_level in AI extraction');
     }
@@ -208,19 +217,7 @@ Return ONLY the JSON object, no additional text or explanations:
       }
     }
 
-    // Validate resume scoring
-    const validSections = ['Education', 'Experience', 'Projects', 'Certifications', 'Skills', 'Achievements'];
-    if (!Array.isArray(data.resume_score_weightage_details)) throw new Error('Missing resume_score_weightage_details');
-    
-    const invalidSections = data.resume_score_weightage_details.filter(item => !validSections.includes(item.resume_section));
-    if (invalidSections.length) {
-      throw new Error(`Invalid resume scoring sections: ${invalidSections.map(s => s.resume_section).join(', ')}`);
-    }
-
-    const totalWeightage = data.resume_score_weightage_details.reduce((sum, item) => sum + (item.resume_weightage || 0), 0);
-    if (totalWeightage !== 100) {
-      throw new Error(`Resume scoring weightage must sum to 100, got ${totalWeightage}`);
-    }
+    // Resume scoring validation removed - it can vary based on job requirements
 
     // Validate experience details
     if (typeof data.experience_details?.experience_min !== 'number' || typeof data.experience_details?.experience_max !== 'number') {

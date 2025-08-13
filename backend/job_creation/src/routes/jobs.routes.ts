@@ -8,7 +8,7 @@ export const jobRoutes = Router();
 // Stricter rate limiting for AI extraction (more resource intensive)
 const rateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // Limit each IP to 10 AI extraction requests per 15 minutes
+  max: 100, // Limit each IP to 10 AI extraction requests per 15 minutes
   message: {
     error: 'Too many AI extraction requests from this IP, please try again later.',
     retryAfter: '15 minutes'
