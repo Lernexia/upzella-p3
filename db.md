@@ -55,7 +55,17 @@ erDiagram
         text[] skills_required "NOT NULL, ARRAY"
         text[] work_type "NOT NULL, ARRAY, CHECK: remote,hybrid,onsite,all"
         text[] employment_type "NOT NULL, ARRAY, CHECK: part-time,full-time,contract,internship,freelance,temporary"
-        text[] seniority_level "NOT NULL, ARRAY, CHECK: entry-level,fresher,junior,senior,manager,director,executive"
+        text[] seniority_level "ARRAY, DEFAULT: '{}', CHECK: entry_level,fresher,junior,senior,manager"
+        jsonb location_details "JSONB: {location_country, location_state, location_city, location_pin_code}"
+        jsonb salary_details "JSONB: {salary_currency: 'USD'|'INR', salary_from, salary_to, salary_period: 'per hour'|'per month'|'per annum'}"
+        jsonb experience_details "JSONB: {experience_min, experience_max}"
+        integer resume_threshold "DEFAULT: 60"
+        timestamptz created_at "DEFAULT: now()"
+        timestamptz updated_at "DEFAULT: now()"
+        text role_name "Role/position name"
+        text[] compensation "ARRAY, DEFAULT: '{}', Benefits array"
+        jsonb resume_score_weightage_details "JSONB array: [{resume_section, resume_criteria, resume_weightage, reason}]"
+        text status "DEFAULT: 'draft', CHECK: draft,published,paused,closed"
         jsonb location_details "JSONB: {location_country, location_state, location_city, location_pin_code}"
         jsonb salary_details "JSONB: {salary_currency, salary_from, salary_to, salary_period}"
         jsonb experience_details "JSONB: {experience_min, experience_max}, NOT NULL"
@@ -152,13 +162,6 @@ The following tables have RLS enabled:
 - JSON schema validation for structured JSONB fields
 - Resume scoring weightage validation (must sum to 100)
 - GIN indexes on JSONB fields for efficient querying
-
-## Major Schema Changes
-- **Removed Tables**: `resume_scoring_weights` table eliminated - data consolidated into jobs table JSON field
-- **JSON Consolidation**: Individual columns converted to structured JSONB fields for better data organization
-- **Constraint Updates**: Work type and employment type values updated for modern work arrangements
-- **Field Elimination**: Redundant `job_name` field removed in favor of `title`
-- **Enhanced Validation**: JSON structure allows for more complex validation and data integrity
 
 ## Database Statistics
 - **Total Tables**: 4 (reduced from 5)

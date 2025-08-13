@@ -118,7 +118,7 @@ const AIIcon: React.FC<IconProps> = ({
                 textAnchor="middle"
                 fontSize="5"
                 fontWeight="900"
-                fill="black"
+                fill={color}
                 opacity="0.9"
                 fontFamily="system-ui, -apple-system, sans-serif"
             >

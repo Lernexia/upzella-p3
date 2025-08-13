@@ -255,7 +255,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {variant === "default" && label && (
           <label 
             htmlFor={inputId} 
-            className="block text-sm font-semibold text-slate-800 mb-3 tracking-wide"
+            className="block text-sm font-semibold text-slate-800 mb-[8px] tracking-wide"
           >
             {label}
             {required && <span className="text-gradient-pink-shade ml-1">*</span>}

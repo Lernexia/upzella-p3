@@ -328,10 +328,9 @@ export const EnhancedToggle: React.FC<{
             : value === option.value;
           
           return (
-            <button
+            <div
               key={option.value}
               onClick={() => multiple ? handleMultiSelect(option.value) : handleSingleSelect(option.value)}
-              disabled={disabled}
               suppressHydrationWarning={true} // Suppress hydration warnings for this element
               className={`px-4 py-2 text-sm cursor-pointer font-semibold rounded-lg transition-all duration-300 relative ${
                 isSelected
@@ -340,7 +339,7 @@ export const EnhancedToggle: React.FC<{
               } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {option.label}
-            </button>
+            </div>
           );
         })}
       </div>

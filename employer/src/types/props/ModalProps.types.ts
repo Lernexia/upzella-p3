@@ -15,6 +15,9 @@ export interface ModalProps extends HTMLAttributes<HTMLDivElement> {
   scrollable?: boolean;
   centered?: boolean;
   backdropClassName?: string;
-  animation?: 'fade' | 'scale' | 'slide';
+  animation?: 'fade' | 'scale' | 'slideUp' | 'slideDown';
   zIndex?: number;
+  classNameHeader?: string;
+  classNameBody?: string;
+  classNameFooter?: string;
 }

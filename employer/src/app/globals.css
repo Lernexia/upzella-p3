@@ -196,7 +196,7 @@
     --font-montserrat: var(--font-montserrat);
 
     /* Upzella Design System Variables */
-    --border-radius-upzella: 12px;
+    --border-radius-upzella: 8px;
     --border-radius-sm: 8px;
     --border-radius-md: 12px;
     --border-radius-lg: 16px;
@@ -804,3 +804,5 @@
     transform: translateY(0);
   }
 }
+
+

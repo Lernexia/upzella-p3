@@ -12,6 +12,7 @@ interface BadgeProps {
   removable?: boolean;
   onRemove?: () => void;
   disabled?: boolean;
+  style?: React.CSSProperties;
 }
 
 export const Badge: React.FC<BadgeProps> = ({
@@ -24,6 +25,7 @@ export const Badge: React.FC<BadgeProps> = ({
   removable = false,
   onRemove,
   disabled = false,
+  style = {},
 }) => {
   // Size configurations
   const sizeConfig = {
@@ -114,6 +116,7 @@ export const Badge: React.FC<BadgeProps> = ({
   return (
     <span
       className={`
+        ${className}
         ${currentSize.padding}
         ${currentSize.text}
         ${currentVariant.background}
@@ -123,11 +126,11 @@ export const Badge: React.FC<BadgeProps> = ({
         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         ${isClickable ? `transition-all duration-200 focus:outline-none focus:ring-4 ${currentVariant.ring}` : ''}
         inline-flex items-center ${currentSize.gap} font-medium shadow-sm
-        ${className}
       `}
       style={{ 
         borderRadius: 'var(--border-radius-upzella)',
-        fontFamily: 'var(--font-accent)'
+        fontFamily: 'var(--font-accent)',
+        ...style
       }}
       onClick={!disabled ? onClick : undefined}
       tabIndex={isClickable && !disabled ? 0 : -1}

@@ -94,7 +94,6 @@ Creates a new job posting with enhanced job details using JSON structure for loc
       "reason": "Projects demonstrate practical application of skills"
     }
   ],
-  "status": "draft",
   "original_job_description_text": "Original job description text for audit trail (optional)"
 }
 ```
@@ -104,7 +103,7 @@ Creates a new job posting with enhanced job details using JSON structure for loc
 - **title**: Complete descriptive job title combining role and specialization
 - **work_type**: Array of work arrangement types: `["remote", "hybrid", "onsite", "all"]`
 - **employment_type**: Array of employment types: `["part-time", "full-time", "contract", "internship", "freelance", "temporary"]`
-- **seniority_level**: Array of experience levels: `["entry-level", "fresher", "junior", "senior", "manager", "director", "executive"]`
+- **seniority_level**: Array of experience levels: `["entry_level", "fresher", "junior", "senior", "manager"]`
 - **location_details**: JSON object with location breakdown:
   - `location_country`: Country name
   - `location_state`: State/province name  
@@ -124,7 +123,6 @@ Creates a new job posting with enhanced job details using JSON structure for loc
   - `resume_criteria`: Specific criteria description for evaluation
   - `resume_weightage`: Weightage percentage (must sum to 100 across all items)
   - `reason`: Justification for why this criteria is important
-- **status**: Job posting status - `"draft"`, `"published"`, `"paused"`, `"closed"` (defaults to "draft")
 
 **Response:**
 ```json
@@ -348,8 +346,7 @@ Updates an existing job posting.
   "title": "Updated Job Title",
   "description": "Updated description...",
   "skills_required": ["JavaScript", "TypeScript", "React", "Node.js"],
-  "resume_threshold": 70,
-  "status": "published"
+  "resume_threshold": 70
 }
 ```
 

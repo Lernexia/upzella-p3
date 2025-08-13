@@ -92,7 +92,7 @@ export default function ColorsTestPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen ">
       <div className="sizer">
         <div className="text-center mb-16 pt-16">
           <Link 

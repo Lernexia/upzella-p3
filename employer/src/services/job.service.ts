@@ -19,8 +19,8 @@ export interface CreateJobRequest {
   };
   salary_details?: {
     salary_currency: 'USD' | 'INR';
-    salary_from?: number;
-    salary_to?: number;
+    salary_from?: number | undefined;
+    salary_to?: number | undefined;
     salary_period?: 'per hour' | 'per month' | 'per annum';
   };
   experience_details: {
@@ -35,7 +35,6 @@ export interface CreateJobRequest {
     resume_weightage: number;
     reason: string;
   }>;
-  status?: 'draft' | 'published' | 'paused' | 'closed';
   original_job_description_text?: string;
 }
 
@@ -57,8 +56,8 @@ export interface Job {
   };
   salary_details?: {
     salary_currency: 'USD' | 'INR';
-    salary_from?: number;
-    salary_to?: number;
+    salary_from?: number | undefined;
+    salary_to?: number | undefined;
     salary_period?: 'per hour' | 'per month' | 'per annum';
   };
   experience_details: {
@@ -73,14 +72,18 @@ export interface Job {
     resume_weightage: number;
     reason: string;
   }>;
-  status: 'draft' | 'published' | 'paused' | 'closed';
   original_job_description_text?: string;
+  status: 'draft' | 'published' | 'paused' | 'closed';
   created_at: string;
   updated_at: string;
+  // Extended properties for joined data
+  company_name?: string;
+  company_logo?: string;
+  applications_count?: number;
 }
 
 export class JobService {
-  private static readonly API_BASE_URL = process.env.NEXT_PUBLIC_JOB_CREATION_API_URL || 'http://localhost:3001/api';
+  private static readonly API_BASE_URL = process.env.NEXT_PUBLIC_JOB_CREATION_API_URL || 'http://localhost:8001/api';
 
   private static async getAuthToken(): Promise<string> {
     const { data: { session } } = await supabase.auth.getSession();

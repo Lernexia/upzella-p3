@@ -23,6 +23,9 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
         backdropClassName = '',
         animation = 'fade',
         zIndex = 50,
+        classNameBody = '',
+        classNameHeader = '',
+        classNameFooter = '',
         ...props
     }, ref) => {
         const modalRef = useRef<HTMLDivElement>(null);
@@ -111,7 +114,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
         // Position classes
         const positionClasses = cn(
-            "fixed inset-0 z-50 flex p-4",
+            "fixed inset-0 z-50 flex",
             centered ? "items-center justify-center" : "items-start justify-center pt-16"
         );
 
@@ -122,7 +125,10 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
         const modalContent = (
             <div
                 ref={backdropRef}
-                className={backdropClasses}
+                className={cn(
+                    backdropClasses,
+                    className,
+                )}
                 style={{ zIndex }}
                 onClick={handleBackdropClick}
             >
@@ -136,7 +142,10 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         {/* Modal Header */}
                         {(title || customHeader || showCloseButton) && (
                             <div 
-                                className="flex items-center justify-between px-6 py-4 border-b border-purple-100/50 bg-gradient-to-r from-purple-25 to-blue-25 flex-shrink-0"
+                                className={cn(
+                                    "flex items-center justify-between px-6 py-4 border-b border-purple-100/50 bg-gradient-to-r from-purple-25 to-blue-25 flex-shrink-0",
+                                    classNameHeader,
+                                )}
                                 style={{ 
                                     borderRadius: 'var(--border-radius-upzella) var(--border-radius-upzella) 0 0',
                                     fontFamily: 'var(--font-heading)'
@@ -179,7 +188,8 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         <div 
                             className={cn(
                                 "flex-1 px-6 py-6",
-                                scrollable ? "overflow-y-auto" : "overflow-hidden"
+                                scrollable ? "overflow-y-auto" : "overflow-hidden",
+                                classNameBody,
                             )}
                             style={{ fontFamily: 'var(--font-body)' }}
                         >
@@ -189,7 +199,10 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         {/* Modal Footer */}
                         {footer && (
                             <div 
-                                className="flex-shrink-0 px-6 py-4 border-t border-purple-100/50 bg-gradient-to-r from-slate-25 to-purple-25/30"
+                                className={cn(
+                                    "flex-shrink-0 px-6 py-4 border-t border-purple-100/50 bg-gradient-to-r from-slate-25 to-purple-25/30",
+                                    classNameFooter,
+                                )}
                                 style={{ 
                                     borderRadius: '0 0 var(--border-radius-upzella) var(--border-radius-upzella)',
                                     fontFamily: 'var(--font-accent)'

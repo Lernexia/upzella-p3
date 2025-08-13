@@ -1,10 +1,11 @@
 import { Logo } from "../Logo";
 
-export const UpzellaLoader = ({ text = 'Loading Upzella...', fullScreen = true }: { text?: string; fullScreen?: boolean }) => {
+export const UpzellaLoader = ({ text = 'Loading Upzella...', fullScreen = true, alpha=false }: { text?: string; fullScreen?: boolean; alpha?: boolean }) => {
     return (
         <div className={`
             ${fullScreen ? 'min-h-screen w-full' : 'h-64'} 
-            flex items-center justify-center bg-white fixed z-[9999] top-0 left-0 w-full h-full overflow-hidden cursor-none
+            ${alpha ? 'bg-white/50' : 'bg-white'}
+            flex items-center justify-center  fixed z-[9999] top-0 left-0 w-full h-full overflow-hidden cursor-none
         `}>
             <div className="text-center flex flex-col items-center justify-center">
                 {/* Logo display */}

@@ -58,68 +58,73 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(({
   // Base styles for the table
   const baseStyles = "w-full text-left border-collapse";
 
-  // Color scheme styles
+  // Color scheme styles (Enhanced professional color schemes)
   const colorSchemes = {
     purple: {
-      header: "bg-gradient-to-r from-[var(--color-purple-50)]/80 to-[var(--color-purple-100)]/60 text-[var(--color-purple-800)]",
-      headerBorder: "border-[var(--color-purple-200)]",
-      cell: "text-[var(--color-slate-700)]",
-      cellBorder: "border-[var(--color-purple-100)]",
-      rowHover: "hover:bg-[var(--color-purple-50)]/70",
-      rowSelected: "bg-[var(--color-purple-100)]/70",
+      header: "bg-gradient-to-r from-violet-50/90 via-purple-50/80 to-indigo-50/70 text-violet-900 border-violet-200",
+      headerBorder: "border-violet-200",
+      cell: "text-slate-700",
+      cellBorder: "border-violet-100",
+      rowHover: "hover:bg-gradient-to-r hover:from-violet-50/40 hover:to-purple-50/30 transition-all duration-200",
+      rowSelected: "bg-gradient-to-r from-violet-100/60 to-purple-100/50",
       background: "bg-white",
-      shadow: "shadow-[0_4px_20px_0_rgba(139,92,246,0.08)]",
+      shadow: "shadow-[0_8px_32px_0_rgba(139,92,246,0.12)]",
+      borderRadius: "rounded-xl",
     },
     blue: {
-      header: "bg-gradient-to-r from-[var(--color-blue-50)]/80 to-[var(--color-blue-100)]/60 text-[var(--color-blue-800)]",
-      headerBorder: "border-[var(--color-blue-200)]",
-      cell: "text-[var(--color-slate-700)]",
-      cellBorder: "border-[var(--color-blue-100)]",
-      rowHover: "hover:bg-[var(--color-blue-50)]/70",
-      rowSelected: "bg-[var(--color-blue-100)]/70",
+      header: "bg-gradient-to-r from-blue-50/90 via-sky-50/80 to-cyan-50/70 text-blue-900 border-blue-200",
+      headerBorder: "border-blue-200",
+      cell: "text-slate-700",
+      cellBorder: "border-blue-100",
+      rowHover: "hover:bg-gradient-to-r hover:from-blue-50/40 hover:to-sky-50/30 transition-all duration-200",
+      rowSelected: "bg-gradient-to-r from-blue-100/60 to-sky-100/50",
       background: "bg-white",
-      shadow: "shadow-[0_4px_20px_0_rgba(59,130,246,0.08)]",
+      shadow: "shadow-[0_8px_32px_0_rgba(59,130,246,0.12)]",
+      borderRadius: "rounded-xl",
     },
     pink: {
-      header: "bg-gradient-to-r from-[var(--color-pink-50)]/80 to-[var(--color-pink-100)]/60 text-[var(--color-pink-800)]",
-      headerBorder: "border-[var(--color-pink-200)]",
-      cell: "text-[var(--color-slate-700)]",
-      cellBorder: "border-[var(--color-pink-100)]",
-      rowHover: "hover:bg-[var(--color-pink-50)]/70",
-      rowSelected: "bg-[var(--color-pink-100)]/70",
+      header: "bg-gradient-to-r from-pink-50/90 via-rose-50/80 to-red-50/70 text-pink-900 border-pink-200",
+      headerBorder: "border-pink-200",
+      cell: "text-slate-700",
+      cellBorder: "border-pink-100",
+      rowHover: "hover:bg-gradient-to-r hover:from-pink-50/40 hover:to-rose-50/30 transition-all duration-200",
+      rowSelected: "bg-gradient-to-r from-pink-100/60 to-rose-100/50",
       background: "bg-white",
-      shadow: "shadow-[0_4px_20px_0_rgba(236,72,153,0.08)]",
+      shadow: "shadow-[0_8px_32px_0_rgba(236,72,153,0.12)]",
+      borderRadius: "rounded-xl",
     },
     slate: {
-      header: "bg-gradient-to-r from-[var(--color-slate-100)] to-[var(--color-slate-200)] text-[var(--color-slate-800)]",
-      headerBorder: "border-[var(--color-slate-300)]",
-      cell: "text-[var(--color-slate-700)]",
-      cellBorder: "border-[var(--color-slate-200)]",
-      rowHover: "hover:bg-[var(--color-slate-50)]",
-      rowSelected: "bg-[var(--color-slate-100)]",
+      header: "bg-gradient-to-r from-slate-100/90 via-gray-100/80 to-stone-100/70 text-slate-900 border-slate-300",
+      headerBorder: "border-slate-300",
+      cell: "text-slate-700",
+      cellBorder: "border-slate-200",
+      rowHover: "hover:bg-gradient-to-r hover:from-slate-50/60 hover:to-gray-50/40 transition-all duration-200",
+      rowSelected: "bg-gradient-to-r from-slate-100/70 to-gray-100/60",
       background: "bg-white",
-      shadow: "shadow-[0_4px_20px_0_rgba(100,116,139,0.08)]",
+      shadow: "shadow-[0_8px_32px_0_rgba(100,116,139,0.12)]",
+      borderRadius: "rounded-xl",
     },
     gradient: {
-      header: "bg-gradient-to-r from-[var(--color-purple-50)]/80 via-[var(--color-pink-50)]/60 to-[var(--color-blue-50)]/60 text-[var(--color-purple-800)]",
-      headerBorder: "border-[var(--color-purple-200)]",
-      cell: "text-[var(--color-slate-700)]",
-      cellBorder: "border-[var(--color-purple-100)]",
-      rowHover: "hover:bg-gradient-to-r hover:from-[var(--color-purple-50)]/30 hover:via-[var(--color-pink-50)]/20 hover:to-[var(--color-blue-50)]/30",
-      rowSelected: "bg-gradient-to-r from-[var(--color-purple-100)]/50 via-[var(--color-pink-100)]/40 to-[var(--color-blue-100)]/50",
+      header: "bg-gradient-to-r from-violet-50/90 via-fuchsia-50/70 via-pink-50/60 to-blue-50/70 text-violet-900 border-violet-200",
+      headerBorder: "border-violet-200",
+      cell: "text-slate-700",
+      cellBorder: "border-violet-100",
+      rowHover: "hover:bg-gradient-to-r hover:from-violet-50/30 hover:via-fuchsia-50/20 hover:via-pink-50/15 hover:to-blue-50/25 transition-all duration-300",
+      rowSelected: "bg-gradient-to-r from-violet-100/50 via-fuchsia-100/40 via-pink-100/30 to-blue-100/45",
       background: "bg-white",
-      shadow: "shadow-[0_4px_20px_0_rgba(139,92,246,0.08)]",
+      shadow: "shadow-[0_8px_32px_0_rgba(139,92,246,0.15)]",
+      borderRadius: "rounded-xl",
     }
   };
 
-  // Variant styles (using Upzella brand tokens, enhanced for professional look)
+  // Variant styles (Enhanced professional variants with improved color schemes)
   const variantStyles = {
-    default: `${colorSchemes[colorScheme].background} border border-[var(--color-purple-100)]/80 ${colorSchemes[colorScheme].shadow} transition-all duration-200 border-separate border-spacing-0`,
-    bordered: `${colorSchemes[colorScheme].background} border-2 ${colorSchemes[colorScheme].headerBorder} ${colorSchemes[colorScheme].shadow} transition-all duration-200 border-separate border-spacing-0`,
-    striped: `${colorSchemes[colorScheme].background} border ${colorSchemes[colorScheme].cellBorder} ${colorSchemes[colorScheme].shadow} [&>tbody>tr:nth-child(odd)]:bg-[var(--color-purple-50)]/30 transition-all duration-200 border-separate border-spacing-0`,
-    minimal: "bg-transparent border-separate border-spacing-0",
-    glass: "bg-white/60 backdrop-blur-md border border-white/20 shadow-lg transition-all duration-200 border-separate border-spacing-0",
-    professional: `bg-white border border-[var(--color-slate-200)] ${colorSchemes[colorScheme].shadow} transition-all duration-200 border-separate border-spacing-0 rounded-md overflow-hidden`
+    default: `${colorSchemes[colorScheme].background} border ${colorSchemes[colorScheme].cellBorder} ${colorSchemes[colorScheme].shadow} transition-all duration-300 border-separate border-spacing-0 ${colorSchemes[colorScheme].borderRadius} overflow-hidden`,
+    bordered: `${colorSchemes[colorScheme].background} border-2 ${colorSchemes[colorScheme].headerBorder} ${colorSchemes[colorScheme].shadow} transition-all duration-300 border-separate border-spacing-0 ${colorSchemes[colorScheme].borderRadius} overflow-hidden`,
+    striped: `${colorSchemes[colorScheme].background} border ${colorSchemes[colorScheme].cellBorder} ${colorSchemes[colorScheme].shadow} [&>tbody>tr:nth-child(odd)]:bg-gradient-to-r [&>tbody>tr:nth-child(odd)]:from-slate-50/40 [&>tbody>tr:nth-child(odd)]:to-gray-50/20 transition-all duration-300 border-separate border-spacing-0 ${colorSchemes[colorScheme].borderRadius} overflow-hidden`,
+    minimal: `bg-transparent border-separate border-spacing-0 ${colorSchemes[colorScheme].borderRadius}`,
+    glass: `bg-white/70 backdrop-blur-lg border border-white/40 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] transition-all duration-300 border-separate border-spacing-0 ${colorSchemes[colorScheme].borderRadius} overflow-hidden`,
+    professional: `${colorSchemes[colorScheme].background} border ${colorSchemes[colorScheme].cellBorder} ${colorSchemes[colorScheme].shadow} transition-all duration-300 border-separate border-spacing-0 ${colorSchemes[colorScheme].borderRadius} overflow-hidden backdrop-blur-sm`
   };
 
   // Size styles (Upzella font tokens, improved spacing)
@@ -277,6 +282,8 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(({
           totalPages={totalPages}
           onPageChange={onPageChange}
           colorScheme={colorScheme}
+          totalRows={totalRows}
+          pageSize={pageSize}
         />
       )}
     </div>
@@ -291,40 +298,44 @@ export interface TablePaginationProps {
   totalPages: number;
   onPageChange?: (page: number) => void;
   colorScheme?: 'purple' | 'blue' | 'pink' | 'slate' | 'gradient';
+  totalRows: any;
+  pageSize: any;
 }
 
 export const TablePagination = ({
   currentPage,
   totalPages,
   onPageChange,
-  colorScheme = 'purple'
+  colorScheme = 'purple',
+  totalRows,
+  pageSize,
 }: TablePaginationProps) => {
-  // Color schemes for pagination
+  // Enhanced color schemes for pagination with modern styling
   const colorSchemes = {
     purple: {
-      button: "bg-[var(--color-purple-50)] text-[var(--color-purple-700)] border-[var(--color-purple-100)] hover:bg-[var(--color-purple-100)] focus:ring-[var(--color-purple-400)]",
-      active: "bg-[var(--color-purple-500)] text-white border-[var(--color-purple-600)] hover:bg-[var(--color-purple-600)]",
-      text: "text-[var(--color-slate-600)]"
+      button: "bg-violet-50 text-violet-700 border border-violet-200 hover:bg-violet-100 hover:border-violet-300 focus:ring-2 focus:ring-violet-400/30 transition-all duration-200",
+      active: "bg-gradient-to-r from-violet-500 to-purple-600 text-white border border-violet-600 hover:from-violet-600 hover:to-purple-700 shadow-md",
+      text: "text-slate-600 font-medium"
     },
     blue: {
-      button: "bg-[var(--color-blue-50)] text-[var(--color-blue-700)] border-[var(--color-blue-100)] hover:bg-[var(--color-blue-100)] focus:ring-[var(--color-blue-400)]",
-      active: "bg-[var(--color-blue-500)] text-white border-[var(--color-blue-600)] hover:bg-[var(--color-blue-600)]",
-      text: "text-[var(--color-slate-600)]"
+      button: "bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 hover:border-blue-300 focus:ring-2 focus:ring-blue-400/30 transition-all duration-200",
+      active: "bg-gradient-to-r from-blue-500 to-sky-600 text-white border border-blue-600 hover:from-blue-600 hover:to-sky-700 shadow-md",
+      text: "text-slate-600 font-medium"
     },
     pink: {
-      button: "bg-[var(--color-pink-50)] text-[var(--color-pink-700)] border-[var(--color-pink-100)] hover:bg-[var(--color-pink-100)] focus:ring-[var(--color-pink-400)]",
-      active: "bg-[var(--color-pink-500)] text-white border-[var(--color-pink-600)] hover:bg-[var(--color-pink-600)]",
-      text: "text-[var(--color-slate-600)]"
+      button: "bg-pink-50 text-pink-700 border border-pink-200 hover:bg-pink-100 hover:border-pink-300 focus:ring-2 focus:ring-pink-400/30 transition-all duration-200",
+      active: "bg-gradient-to-r from-pink-500 to-rose-600 text-white border border-pink-600 hover:from-pink-600 hover:to-rose-700 shadow-md",
+      text: "text-slate-600 font-medium"
     },
     slate: {
-      button: "bg-[var(--color-slate-100)] text-[var(--color-slate-700)] border-[var(--color-slate-200)] hover:bg-[var(--color-slate-200)] focus:ring-[var(--color-slate-400)]",
-      active: "bg-[var(--color-slate-700)] text-white border-[var(--color-slate-800)] hover:bg-[var(--color-slate-800)]",
-      text: "text-[var(--color-slate-600)]"
+      button: "bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 hover:border-slate-300 focus:ring-2 focus:ring-slate-400/30 transition-all duration-200",
+      active: "bg-gradient-to-r from-slate-700 to-gray-800 text-white border border-slate-800 hover:from-slate-800 hover:to-gray-900 shadow-md",
+      text: "text-slate-600 font-medium"
     },
     gradient: {
-      button: "bg-[var(--color-purple-50)] text-[var(--color-purple-700)] border-[var(--color-purple-100)] hover:bg-[var(--color-purple-100)] focus:ring-[var(--color-purple-400)]",
-      active: "bg-gradient-to-r from-[var(--color-purple-500)] to-[var(--color-pink-500)] text-white border-transparent hover:from-[var(--color-purple-600)] hover:to-[var(--color-pink-600)]",
-      text: "text-[var(--color-slate-600)]"
+      button: "bg-gradient-to-r from-violet-50 to-blue-50 text-violet-700 border border-violet-200 hover:from-violet-100 hover:to-blue-100 hover:border-violet-300 focus:ring-2 focus:ring-violet-400/30 transition-all duration-200",
+      active: "bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500 text-white border-transparent hover:from-violet-600 hover:via-purple-600 hover:to-pink-600 shadow-lg",
+      text: "text-slate-600 font-medium"
     }
   };
 
@@ -379,15 +390,17 @@ export const TablePagination = ({
   };
 
   return (
-    <div className="flex justify-between items-center mt-4 font-accent p-5">
-      <div className={cn("text-sm", colorSchemes[colorScheme].text)}>
-        Page {currentPage} of {totalPages}
+    <div className="flex flex-col sm:flex-row justify-between items-center mt-6 p-4 bg-gradient-to-r from-gray-50/50 to-slate-50/50 rounded-lg border border-gray-200/50 backdrop-blur-sm">
+      <div className={cn("text-sm mb-4 sm:mb-0", colorSchemes[colorScheme].text)}>
+        Showing <span className="font-semibold">{((currentPage - 1) * pageSize) + 1}</span> to{" "}
+        <span className="font-semibold">{Math.min(currentPage * pageSize, totalRows)}</span> of{" "}
+        <span className="font-semibold">{totalRows}</span> results
       </div>
 
       <div className="flex items-center gap-1">
         <button
           className={cn(
-            "px-2 py-1 rounded text-sm border disabled:opacity-50 font-accent transition-colors focus:outline-none focus:ring-2",
+            "flex items-center justify-center w-9 h-9 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200",
             colorSchemes[colorScheme].button
           )}
           onClick={() => onPageChange && onPageChange(currentPage - 1)}
@@ -402,12 +415,18 @@ export const TablePagination = ({
         {getPageNumbers().map((pageNum, index) => (
           <React.Fragment key={index}>
             {pageNum === '...' ? (
-              <span className={cn("px-2 py-1 text-sm", colorSchemes[colorScheme].text)}>...</span>
+              <span className={cn("flex items-center justify-center w-9 h-9 text-sm", colorSchemes[colorScheme].text)}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/>
+                </svg>
+              </span>
             ) : (
               <button
                 className={cn(
-                  "min-w-[32px] h-8 rounded text-sm border font-accent transition-colors focus:outline-none focus:ring-2",
-                  currentPage === pageNum ? colorSchemes[colorScheme].active : colorSchemes[colorScheme].button
+                  "flex items-center justify-center w-9 h-9 rounded-lg text-sm font-medium transition-all duration-200",
+                  currentPage === pageNum 
+                    ? colorSchemes[colorScheme].active 
+                    : colorSchemes[colorScheme].button
                 )}
                 onClick={() => onPageChange && onPageChange(pageNum as number)}
                 disabled={currentPage === pageNum}
@@ -422,7 +441,7 @@ export const TablePagination = ({
 
         <button
           className={cn(
-            "px-2 py-1 rounded text-sm border disabled:opacity-50 font-accent transition-colors focus:outline-none focus:ring-2",
+            "flex items-center justify-center w-9 h-9 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200",
             colorSchemes[colorScheme].button
           )}
           onClick={() => onPageChange && onPageChange(currentPage + 1)}
@@ -527,8 +546,8 @@ export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(({ classN
     <tr
       ref={ref}
       className={cn(
-        "transition-colors duration-200 hover:bg-[var(--color-purple-50)]/50 focus-within:bg-[var(--color-purple-100)]/40",
-        isSelected && "bg-[var(--color-purple-100)]/70 outline outline-1 outline-[var(--color-purple-300)]",
+        "transition-colors duration-300 hover:bg-[var(--color-purple-50)]/50 focus-within:bg-[var(--color-purple-100)]/40",
+        isSelected && "bg-[var(--color-purple-100)]/70 outline-1 outline-[var(--color-purple-300)]",
         className
       )}
       tabIndex={0}

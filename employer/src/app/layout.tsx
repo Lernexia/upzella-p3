@@ -42,12 +42,31 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+
+      <head>
+        <script
+          type="module"
+          src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.min.mjs"
+        ></script>
+        <script
+          type="module"
+          src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf_viewer.min.css"
+        ></script>
+        <script
+          src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.worker.mjs"
+          type="module"
+        ></script>
+        <script src=
+          "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
+        </script>
+      </head>
+
       <body
         suppressHydrationWarning
         className={`${poppins.variable} ${outfit.variable} ${inter.variable} ${montserrat.variable} relative antialiased`}
       >
 
-        <main className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 relative">
+        <main className="min-h-screen relative">
           <ToastProvider>
             <AuthProvider>
               <LayoutWrapper>
@@ -58,17 +77,24 @@ export default function RootLayout({
           </ToastProvider>
         </main>
 
-
         {/* Scripts for enhanced functionality */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-            
-            `,
+          document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('input[type="number"]').forEach(function(input) {
+          input.addEventListener("wheel", function(event) {
+            this.blur();
+          });
+            });
+          });
+
+          $('input[type="number"]').on("wheel", function (e) {
+                $(this).blur();
+            });
+        `,
           }}
         />
-
-
       </body>
     </html>
   );

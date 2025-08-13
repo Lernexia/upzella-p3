@@ -1,17 +1,17 @@
 import { z } from "zod";
 import { id } from "zod/locales";
 
-// Base employer schema for database operations
+// Base employer schema for database operations - matches actual database structure
 export const EmployerSchema = z.object({
   id: z.string().uuid(),
   full_name: z.string().min(1, "Full name is required"),
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().nullable(),
-  company_id: z.string().uuid(),
-  job_role: z.string().default("HR Manager"),
+  company_id: z.string().uuid().nullable(), // Made nullable to match database
+  job_role: z.string().default("HR Manager").nullable(),
   avatar_url: z.string().url().nullable(),
-  is_active: z.boolean().default(true),
-  is_verified: z.boolean().default(false),
+  is_active: z.boolean().default(true).nullable(),
+  is_verified: z.boolean().default(false).nullable(),
   last_login_at: z.string().datetime().nullable(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
