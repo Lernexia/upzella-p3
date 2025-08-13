@@ -10,9 +10,9 @@ import { Badge } from '@/components/ui-components/Badge';
 import { UpzellaLoader } from '@/components/ui-components/loader';
 import { StatsContainer, StatItem } from '@/components/ui-components/StatsContainer';
 import { Logo } from '@/components/Logo';
-import { 
-    ArrowLeftIcon, 
-    EditIcon, 
+import {
+    ArrowLeftIcon,
+    EditIcon,
     DeleteIcon,
     JobIcon,
     CalendarIcon,
@@ -29,6 +29,7 @@ import {
     ViewIcon
 } from '@/components/svg-icons';
 import { useToast } from '@/hooks/useToast';
+import { GradientBar } from '@/components/ui-components/GradientBar';
 
 export default function JobDetailPage() {
     const [job, setJob] = useState<Job | null>(null);
@@ -63,7 +64,7 @@ export default function JobDetailPage() {
 
     const handleDelete = async () => {
         if (!job || deleting) return;
-        
+
         const confirmed = window.confirm('Are you sure you want to delete this job? This action cannot be undone.');
         if (!confirmed) return;
 
@@ -225,110 +226,162 @@ export default function JobDetailPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-            {/* Enhanced Header */}
-            <div className="bg-white/80 backdrop-blur-sm border-b border-slate-200/50 shadow-sm sticky top-0 z-50">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-50/20 to-purple-50/20"></div>
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-16">
-                        <div className="flex items-center space-x-6">
-                            <Logo size="sm" />
-                            <div className="hidden md:block w-px h-8 bg-gradient-to-b from-transparent via-slate-300 to-transparent"></div>
-                            <Link 
-                                href="/jobs" 
-                                className="group flex items-center text-slate-600 hover:text-slate-900 transition-all duration-300 hover:bg-slate-50 px-3 py-2 rounded-lg"
-                            >
-                                <ArrowLeftIcon className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
-                                <span className="font-medium">Back to Jobs</span>
-                            </Link>
+        <div className="min-h-screen">
+            {/* Clean Navigation Header */}
+
+            <div className="sizer py-4">
+                <div className="h-16">
+                    <div className="flex items-center justify-between">
+                        <div className='flex items-center space-x-4'>
+                            <div className='flex items-center space-x-4'>
+                                <Button
+                                    variant='ghost'
+                                    onClick={() => router.push(`/jobs/${jobId}`)}
+                                    leftIcon={<ArrowLeftIcon className="w-4 h-4" />}
+                                    className='bg-transparent hover:bg-transparent text-blue-500 hover:underline hover:animate-pulse'
+                                >
+                                    Back to Job
+                                </Button>
+                                <GradientBar color='blue' />
+                            </div>
+                            <div className='flex flex-col'>
+                                <h1 className="text-xl font-heading font-bold text-slate-900">Job Dashboard</h1>
+                                <p className="text-slate-600 font-body">
+                                    Analytics and applications for "{job.title}"
+                                </p>
+                            </div>
                         </div>
-                        <div className="flex items-center space-x-3">
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                    navigator.clipboard.writeText(window.location.href);
-                                    toast.success('Success', 'Job link copied to clipboard!');
-                                }}
-                                leftIcon={<ShareIcon className="w-4 h-4" />}
-                            >
-                                Share
-                            </Button>
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
+                            <ViewIcon className="w-5 h-5 text-white" />
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Hero Section - Job Header */}
-            <div className="relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-purple-600/5 to-pink-600/5"></div>
-                <div className="absolute inset-0" style={{
-                    backgroundImage: `radial-gradient(circle at 1px 1px, rgba(226,232,240,0.1) 1px, transparent 0)`,
-                    backgroundSize: '60px 60px'
-                }}></div>
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16">
-                    <div className="text-center mb-12">
-                        <div className="inline-flex items-center justify-center w-20 h-20 mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl shadow-xl">
-                            {job.company_logo ? (
-                                <img 
-                                    src={job.company_logo} 
-                                    alt={job.company_name}
-                                    className="w-full h-full rounded-2xl object-cover"
-                                />
-                            ) : (
-                                <CompanyIcon className="w-10 h-10 text-white" />
-                            )}
+
+
+            <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-between h-16">
+                        <div className="flex items-center space-x-4">
+                            <Logo size="sm" />
+                            <div className="w-px h-6 bg-gray-300"></div>
+                            <Link
+                                href="/jobs"
+                                className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+                            >
+                                <ArrowLeftIcon className="w-4 h-4 mr-2" />
+                                Back to Jobs
+                            </Link>
                         </div>
-                        <h1 className="text-5xl md:text-6xl font-heading font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 bg-clip-text text-transparent mb-4 leading-tight">
-                            {job.title}
-                        </h1>
-                        <div className="flex flex-wrap items-center justify-center gap-3 text-xl text-slate-600 mb-8">
-                            <span className="font-semibold text-slate-800">{job.company_name}</span>
-                            {job.role_name && job.role_name !== job.title && (
-                                <>
-                                    <div className="w-1 h-1 rounded-full bg-slate-400"></div>
-                                    <span className="text-slate-700">{job.role_name}</span>
-                                </>
-                            )}
-                            <div className="w-1 h-1 rounded-full bg-slate-400"></div>
-                            <div className="flex items-center space-x-2">
-                                <LocationIcon className="w-5 h-5 text-slate-500" />
-                                <span>{formatLocation(job.location_details)}</span>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                                navigator.clipboard.writeText(window.location.href);
+                                toast.success('Success', 'Job link copied to clipboard!');
+                            }}
+                            leftIcon={<ShareIcon className="w-4 h-4" />}
+                        >
+                            Share
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Main Job Header Card */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <Card className="mb-8 overflow-hidden">
+                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-12">
+                        <div className="flex items-start space-x-6">
+                            <div className="flex-shrink-0">
+                                {job.company_logo ? (
+                                    <img
+                                        src={job.company_logo}
+                                        alt={job.company_name}
+                                        className="w-20 h-20 rounded-xl object-cover bg-white shadow-lg"
+                                    />
+                                ) : (
+                                    <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center shadow-lg">
+                                        <CompanyIcon className="w-10 h-10 text-blue-600" />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center space-x-3 mb-2">
+                                    <h1 className="text-3xl font-bold text-white truncate">
+                                        {job.title}
+                                    </h1>
+                                    {job.role_name && job.role_name !== job.title && (
+                                        <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+                                            {job.role_name}
+                                        </Badge>
+                                    )}
+                                </div>
+                                <p className="text-xl text-blue-100 font-medium mb-4">
+                                    {job.company_name}
+                                </p>
+
+                                {/* Job Details Row */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                                    <div className="flex items-center space-x-3">
+                                        <SalaryIcon className="w-5 h-5 text-white" />
+                                        <div>
+                                            <p className="text-sm text-blue-100">Salary</p>
+                                            <p className="text-white font-semibold">
+                                                {formatSalary(job.salary_details)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center space-x-3">
+                                        <LocationIcon className="w-5 h-5 text-white" />
+                                        <div>
+                                            <p className="text-sm text-blue-100">Location</p>
+                                            <p className="text-white font-semibold">
+                                                {formatLocation(job.location_details)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center space-x-3">
+                                        <UserIcon className="w-5 h-5 text-white" />
+                                        <div>
+                                            <p className="text-sm text-blue-100">Experience</p>
+                                            <p className="text-white font-semibold">
+                                                {formatExperience(job.experience_details)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        
-                        {/* Status and Type Badges */}
-                        <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
-                            <div className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-200/60 shadow-sm">
+
+                        {/* Status and Work Type */}
+                        <div className="flex flex-wrap items-center gap-3 mt-6">
+                            <div className="flex items-center space-x-2">
                                 <span className="text-lg">{getStatusIcon(job.status!)}</span>
-                                <Badge variant={getStatusColor(job.status!)} size="lg" className="capitalize border-0 shadow-sm">
+                                <Badge variant={getStatusColor(job.status!)} className="capitalize">
                                     {job.status}
                                 </Badge>
                             </div>
                             {job.employment_type?.map((type, idx) => (
-                                <Badge key={idx} variant="default" size="lg" className="bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm capitalize hover:shadow-md transition-shadow">
+                                <Badge key={idx} variant="default" className="bg-white/20 text-white border-white/30">
                                     {type.replace('-', ' ')}
                                 </Badge>
                             ))}
                             {job.work_type?.map((type, idx) => (
-                                <Badge key={idx} variant="secondary" size="lg" className="bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm capitalize hover:shadow-md transition-shadow">
+                                <Badge key={idx} variant="secondary" className="bg-white/20 text-white border-white/30">
                                     {type}
-                                </Badge>
-                            ))}
-                            {job.seniority_level?.map((level, idx) => (
-                                <Badge key={idx} variant="info" size="lg" className="bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm capitalize hover:shadow-md transition-shadow">
-                                    {level.replace('_', ' ')}
                                 </Badge>
                             ))}
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex flex-wrap items-center justify-center gap-4">
+                        <div className="flex flex-wrap gap-4 mt-8">
                             <Link href={`/jobs/${job.id}/dashboard`}>
                                 <Button
-                                    variant="primary"
+                                    variant="secondary"
                                     size="lg"
-                                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                                    className="bg-white text-blue-600 hover:bg-blue-50"
                                     leftIcon={<ViewIcon className="w-5 h-5" />}
                                 >
                                     View Dashboard
@@ -336,9 +389,9 @@ export default function JobDetailPage() {
                             </Link>
                             <Link href={`/jobs/${job.id}/edit`}>
                                 <Button
-                                    variant="secondary"
+                                    variant="outline"
                                     size="lg"
-                                    className="bg-white/80 backdrop-blur-sm border-slate-200/60 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                                    className="border-white/30 text-white hover:bg-white/10"
                                     leftIcon={<EditIcon className="w-5 h-5" />}
                                 >
                                     Edit Job
@@ -347,379 +400,201 @@ export default function JobDetailPage() {
                             <Button
                                 variant="outline"
                                 size="lg"
-                                className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                                className="border-red-300 text-red-100 hover:bg-red-500/20"
                                 onClick={handleDelete}
                                 disabled={deleting}
                                 leftIcon={<DeleteIcon className="w-5 h-5" />}
                             >
-                                {deleting ? 'Deleting...' : 'Delete Job'}
+                                {deleting ? 'Deleting...' : 'Delete'}
                             </Button>
                         </div>
                     </div>
+                </Card>
+
+                {/* Stats Section */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    {generateJobStats(job).map((stat, index) => (
+                        <Card key={stat.id} className="p-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-medium text-gray-600">{stat.label}</p>
+                                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                                    {stat.trending && stat.trendValue && (
+                                        <p className={`text-sm ${stat.trending === 'up' ? 'text-green-600' : stat.trending === 'down' ? 'text-red-600' : 'text-gray-600'}`}>
+                                            {stat.trending === 'up' ? '↗' : stat.trending === 'down' ? '↘' : '→'} {stat.trendValue}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${stat.colorVariant === 'blue' ? 'bg-blue-100' :
+                                        stat.colorVariant === 'purple' ? 'bg-purple-100' :
+                                            stat.colorVariant === 'green' ? 'bg-green-100' :
+                                                'bg-orange-100'
+                                    }`}>
+                                    {stat.colorVariant === 'blue' && <UserIcon className="w-6 h-6 text-blue-600" />}
+                                    {stat.colorVariant === 'purple' && <ViewIcon className="w-6 h-6 text-purple-600" />}
+                                    {stat.colorVariant === 'green' && <StarIcon className="w-6 h-6 text-green-600" />}
+                                    {stat.colorVariant === 'orange' && <ClockIcon className="w-6 h-6 text-orange-600" />}
+                                </div>
+                            </div>
+                        </Card>
+                    ))}
                 </div>
-            </div>
 
-            {/* Performance Stats Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10 mb-16">
-                <div className="bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl shadow-xl p-8">
-                    <StatsContainer
-                        title="📊 Job Performance Insights"
-                        description="Real-time analytics and key metrics for this job posting"
-                        stats={generateJobStats(job)}
-                        cols={4}
-                        gap={6}
-                        background="gradient"
-                        className="mb-0"
-                    />
-                </div>
-            </div>
-
-            {/* Main Content Grid */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-                <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-                    {/* Left Sidebar - Job Essentials */}
-                    <div className="xl:col-span-1 space-y-6">
-                        {/* Job Essentials Card */}
-                        <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm shadow-md">
-                            <div className="p-6 bg-gradient-to-br from-slate-50/50 to-white">
-                                <h3 className="text-lg font-heading font-bold text-slate-900 mb-6 flex items-center">
-                                    <div className="w-2 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full mr-3"></div>
-                                    Job Essentials
-                                </h3>
-                                <div className="space-y-6">
-                                    <div className="group/item hover:bg-slate-50 p-3 rounded-lg transition-colors">
-                                        <div className="flex items-start space-x-4">
-                                            <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center group-hover/item:shadow-md transition-shadow">
-                                                <SalaryIcon className="w-5 h-5 text-emerald-600" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <p className="text-sm font-semibold text-slate-900 mb-1">Salary Range</p>
-                                                <p className="text-lg font-bold text-emerald-700">
-                                                    {formatSalary(job.salary_details)}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="group/item hover:bg-slate-50 p-3 rounded-lg transition-colors">
-                                        <div className="flex items-start space-x-4">
-                                            <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center group-hover/item:shadow-md transition-shadow">
-                                                <UserIcon className="w-5 h-5 text-indigo-600" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <p className="text-sm font-semibold text-slate-900 mb-1">Experience</p>
-                                                <p className="text-lg font-bold text-indigo-700">
-                                                    {formatExperience(job.experience_details)}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="group/item hover:bg-slate-50 p-3 rounded-lg transition-colors">
-                                        <div className="flex items-start space-x-4">
-                                            <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl flex items-center justify-center group-hover/item:shadow-md transition-shadow">
-                                                <LocationIcon className="w-5 h-5 text-purple-600" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <p className="text-sm font-semibold text-slate-900 mb-1">Location</p>
-                                                <p className="text-sm font-medium text-purple-700">
-                                                    {formatLocation(job.location_details)}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="group/item hover:bg-slate-50 p-3 rounded-lg transition-colors">
-                                        <div className="flex items-start space-x-4">
-                                            <div className="w-10 h-10 bg-gradient-to-br from-amber-100 to-yellow-100 rounded-xl flex items-center justify-center group-hover/item:shadow-md transition-shadow">
-                                                <StarIcon className="w-5 h-5 text-amber-600" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <p className="text-sm font-semibold text-slate-900 mb-1">Resume Score</p>
-                                                <p className="text-lg font-bold text-amber-700">
-                                                    {job.resume_threshold}% Threshold
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Card>
-
-                        {/* Quick Stats */}
-                        <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm shadow-md">
-                            <div className="p-6">
-                                <h3 className="text-lg font-heading font-bold text-slate-900 mb-4 flex items-center">
-                                    <div className="w-2 h-8 bg-gradient-to-b from-green-500 to-teal-600 rounded-full mr-3"></div>
-                                    Quick Stats
-                                </h3>
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-center p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg">
-                                        <span className="text-sm font-medium text-slate-700">Applications</span>
-                                        <span className="text-lg font-bold text-blue-600">
-                                            {job.applications_count || Math.floor(Math.random() * 156) + 25}
-                                        </span>
-                                    </div>
-                                    <div className="flex justify-between items-center p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
-                                        <span className="text-sm font-medium text-slate-700">Views</span>
-                                        <span className="text-lg font-bold text-purple-600">
-                                            {Math.floor(Math.random() * 890) + 250}
-                                        </span>
-                                    </div>
-                                    <div className="flex justify-between items-center p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg">
-                                        <span className="text-sm font-medium text-slate-700">Status</span>
-                                        <Badge variant={getStatusColor(job.status!)} size="sm" className="capitalize font-semibold">
-                                            {job.status}
-                                        </Badge>
-                                    </div>
-                                </div>
-                            </div>
-                        </Card>
-
-                        {/* Quick Actions */}
-                        <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm shadow-md">
-                            <div className="p-6">
-                                <h3 className="text-lg font-heading font-bold text-slate-900 mb-4 flex items-center">
-                                    <div className="w-2 h-8 bg-gradient-to-b from-orange-500 to-red-600 rounded-full mr-3"></div>
-                                    Quick Actions
-                                </h3>
-                                <div className="space-y-3">
-                                    <Link href={`/jobs/${job.id}/dashboard`}>
-                                        <Button 
-                                            variant="outline" 
-                                            className="w-full justify-start hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700 transition-all duration-200" 
-                                            leftIcon={<HireIcon className="w-4 h-4" />}
-                                        >
-                                            View Applications
-                                        </Button>
-                                    </Link>
-                                    <Button 
-                                        variant="outline" 
-                                        className="w-full justify-start hover:bg-green-50 hover:border-green-200 hover:text-green-700 transition-all duration-200" 
-                                        leftIcon={<ShareIcon className="w-4 h-4" />}
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(window.location.href);
-                                            toast.success('Success', 'Job link copied to clipboard!');
-                                        }}
-                                    >
-                                        Share Job
-                                    </Button>
-                                    <Link href={`/jobs/${job.id}/edit`}>
-                                        <Button 
-                                            variant="outline" 
-                                            className="w-full justify-start hover:bg-amber-50 hover:border-amber-200 hover:text-amber-700 transition-all duration-200" 
-                                            leftIcon={<EditIcon className="w-4 h-4" />}
-                                        >
-                                            Edit Details
-                                        </Button>
-                                    </Link>
-                                </div>
-                            </div>
-                        </Card>
-                    </div>
-
-                    {/* Main Content Area */}
-                    <div className="xl:col-span-3 space-y-8">
+                {/* Content Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Main Content */}
+                    <div className="lg:col-span-2 space-y-8">
                         {/* Job Description */}
-                        <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/90 backdrop-blur-sm shadow-lg overflow-hidden">
-                            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-1">
-                                <div className="bg-white rounded-t-lg p-8 pb-6">
-                                    <div className="flex items-center space-x-3 mb-6">
-                                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                                            <JobIcon className="w-6 h-6 text-white" />
-                                        </div>
-                                        <div>
-                                            <h2 className="text-2xl font-heading font-bold text-slate-900">
-                                                Job Description
-                                            </h2>
-                                            <p className="text-slate-600">What you'll be doing in this role</p>
-                                        </div>
-                                    </div>
+                        <Card className="p-8">
+                            <div className="flex items-center space-x-3 mb-6">
+                                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <JobIcon className="w-5 h-5 text-blue-600" />
                                 </div>
+                                <h2 className="text-xl font-bold text-gray-900">Job Description</h2>
                             </div>
-                            <div className="p-8 pt-0">
-                                <div className="prose prose-slate prose-lg max-w-none">
-                                    <div className="text-slate-700 leading-relaxed whitespace-pre-line text-base space-y-4">
-                                        {job.description.split('\n').map((paragraph, index) => (
-                                            paragraph.trim() && (
-                                                <p key={index} className="mb-4 text-slate-700 leading-relaxed">
-                                                    {paragraph.trim()}
-                                                </p>
-                                            )
-                                        ))}
-                                    </div>
+                            <div className="prose prose-gray max-w-none">
+                                <div className="text-gray-700 leading-relaxed space-y-4">
+                                    {job.description.split('\n').map((paragraph, index) => (
+                                        paragraph.trim() && (
+                                            <p key={index} className="mb-4">
+                                                {paragraph.trim()}
+                                            </p>
+                                        )
+                                    ))}
                                 </div>
                             </div>
                         </Card>
 
                         {/* Skills Required */}
                         {job.skills_required && job.skills_required.length > 0 && (
-                            <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/90 backdrop-blur-sm shadow-lg overflow-hidden">
-                                <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-1">
-                                    <div className="bg-white rounded-t-lg p-8 pb-6">
-                                        <div className="flex items-center space-x-3 mb-6">
-                                            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
-                                                <SparkleIcon className="w-6 h-6 text-white" />
-                                            </div>
-                                            <div>
-                                                <h2 className="text-2xl font-heading font-bold text-slate-900">
-                                                    Skills & Technologies
-                                                </h2>
-                                                <p className="text-slate-600">Required expertise for this position</p>
-                                            </div>
-                                        </div>
+                            <Card className="p-8">
+                                <div className="flex items-center space-x-3 mb-6">
+                                    <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                        <SparkleIcon className="w-5 h-5 text-purple-600" />
                                     </div>
+                                    <h2 className="text-xl font-bold text-gray-900">Skills & Technologies</h2>
                                 </div>
-                                <div className="p-8 pt-0">
-                                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                                        {job.skills_required.map((skill, index) => (
-                                            <div key={index} className="group/skill">
-                                                <Badge 
-                                                    variant="secondary" 
-                                                    size="lg"
-                                                    className="w-full justify-center text-center py-3 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200 text-purple-800 hover:from-purple-100 hover:to-pink-100 hover:border-purple-300 transition-all duration-200 cursor-default shadow-sm hover:shadow-md font-semibold"
-                                                >
-                                                    {skill}
-                                                </Badge>
-                                            </div>
-                                        ))}
-                                    </div>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                    {job.skills_required.map((skill, index) => (
+                                        <Badge
+                                            key={index}
+                                            variant="secondary"
+                                            className="justify-center py-2 text-center"
+                                        >
+                                            {skill}
+                                        </Badge>
+                                    ))}
                                 </div>
                             </Card>
                         )}
 
-                        {/* Compensation & Benefits */}
+                        {/* Benefits */}
                         {job.compensation && job.compensation.length > 0 && (
-                            <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/90 backdrop-blur-sm shadow-lg overflow-hidden">
-                                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-1">
-                                    <div className="bg-white rounded-t-lg p-8 pb-6">
-                                        <div className="flex items-center space-x-3 mb-6">
-                                            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-                                                <StarIcon className="w-6 h-6 text-white" />
-                                            </div>
-                                            <div>
-                                                <h2 className="text-2xl font-heading font-bold text-slate-900">
-                                                    Benefits & Perks
-                                                </h2>
-                                                <p className="text-slate-600">Additional compensation and benefits</p>
-                                            </div>
-                                        </div>
+                            <Card className="p-8">
+                                <div className="flex items-center space-x-3 mb-6">
+                                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <StarIcon className="w-5 h-5 text-green-600" />
                                     </div>
+                                    <h2 className="text-xl font-bold text-gray-900">Benefits & Perks</h2>
                                 </div>
-                                <div className="p-8 pt-0">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {job.compensation.map((benefit, index) => (
-                                            <div key={index} className="flex items-center space-x-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 hover:shadow-md transition-all duration-200">
-                                                <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center">
-                                                    <StarIcon className="w-4 h-4 text-white" />
-                                                </div>
-                                                <span className="font-semibold text-green-800">
-                                                    {benefit}
-                                                </span>
+                                <div className="space-y-3">
+                                    {job.compensation.map((benefit, index) => (
+                                        <div key={index} className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
+                                            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                                <span className="text-white text-sm">✓</span>
                                             </div>
-                                        ))}
-                                    </div>
+                                            <span className="font-medium text-green-800">{benefit}</span>
+                                        </div>
+                                    ))}
                                 </div>
                             </Card>
                         )}
+                    </div>
 
-                        {/* Resume Scoring Criteria */}
-                        {job.resume_score_weightage_details && job.resume_score_weightage_details.length > 0 && (
-                            <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/90 backdrop-blur-sm shadow-lg overflow-hidden">
-                                <div className="bg-gradient-to-r from-indigo-600 to-blue-600 p-1">
-                                    <div className="bg-white rounded-t-lg p-8 pb-6">
-                                        <div className="flex items-center space-x-3 mb-6">
-                                            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                                                <SettingsIcon className="w-6 h-6 text-white" />
-                                            </div>
-                                            <div>
-                                                <h2 className="text-2xl font-heading font-bold text-slate-900">
-                                                    Resume Scoring Criteria
-                                                </h2>
-                                                <p className="text-slate-600">
-                                                    How applications are evaluated • Minimum threshold: {job.resume_threshold}%
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
+                    {/* Sidebar */}
+                    <div className="space-y-6">
+                        {/* Job Overview */}
+                        <Card className="p-6">
+                            <h3 className="text-lg font-bold text-gray-900 mb-4">Job Overview</h3>
+                            <div className="space-y-4">
+                                <div>
+                                    <p className="text-sm font-medium text-gray-500">Resume Threshold</p>
+                                    <p className="text-lg font-semibold text-gray-900">{job.resume_threshold}%</p>
                                 </div>
-                                <div className="p-8 pt-0">
-                                    <div className="space-y-4">
-                                        {job.resume_score_weightage_details.map((criteria, index) => (
-                                            <div key={index} className="group/criteria border border-slate-200 rounded-xl p-6 hover:shadow-md transition-all duration-200 bg-gradient-to-r from-slate-50/50 to-white">
-                                                <div className="flex items-start justify-between mb-4">
-                                                    <div className="flex items-center space-x-3">
-                                                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-100 to-blue-100 rounded-lg flex items-center justify-center">
-                                                            <span className="text-indigo-600 font-bold text-sm">{index + 1}</span>
-                                                        </div>
-                                                        <Badge variant="default" className="capitalize font-semibold bg-indigo-50 text-indigo-700 border-indigo-200">
-                                                            {criteria.resume_section}
-                                                        </Badge>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <span className="text-2xl font-bold text-indigo-600">
-                                                            {criteria.resume_weightage}%
-                                                        </span>
-                                                        <p className="text-xs text-slate-500">weightage</p>
-                                                    </div>
-                                                </div>
-                                                <div className="ml-13">
-                                                    <p className="text-slate-700 font-medium mb-2">
-                                                        {criteria.resume_criteria}
-                                                    </p>
-                                                    {criteria.reason && (
-                                                        <p className="text-sm text-slate-600 bg-slate-50 p-3 rounded-lg border-l-4 border-slate-300">
-                                                            <span className="font-medium text-slate-700">Reasoning:</span> {criteria.reason}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
+                                <div>
+                                    <p className="text-sm font-medium text-gray-500">Posted</p>
+                                    <p className="text-lg font-semibold text-gray-900">{formatDate(job.created_at)}</p>
                                 </div>
-                            </Card>
-                        )}
-
-                        {/* Timeline & History */}
-                        <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/90 backdrop-blur-sm shadow-lg overflow-hidden">
-                            <div className="bg-gradient-to-r from-amber-600 to-orange-600 p-1">
-                                <div className="bg-white rounded-t-lg p-8 pb-6">
-                                    <div className="flex items-center space-x-3 mb-6">
-                                        <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
-                                            <ClockIcon className="w-6 h-6 text-white" />
-                                        </div>
-                                        <div>
-                                            <h2 className="text-2xl font-heading font-bold text-slate-900">
-                                                Job Timeline
-                                            </h2>
-                                            <p className="text-slate-600">Important dates and milestones</p>
-                                        </div>
-                                    </div>
+                                <div>
+                                    <p className="text-sm font-medium text-gray-500">Last Updated</p>
+                                    <p className="text-lg font-semibold text-gray-900">{formatDate(job.updated_at)}</p>
                                 </div>
-                            </div>
-                            <div className="p-8 pt-0">
-                                <div className="space-y-6">
-                                    <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl">
-                                        <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
-                                            <CalendarIcon className="w-6 h-6 text-white" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="font-semibold text-slate-900">Job Created</p>
-                                            <p className="text-green-700 font-medium">{formatDate(job.created_at)}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
-                                        <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center">
-                                            <ClockIcon className="w-6 h-6 text-white" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="font-semibold text-slate-900">Last Updated</p>
-                                            <p className="text-blue-700 font-medium">{formatDate(job.updated_at)}</p>
-                                        </div>
-                                    </div>
+                                <div>
+                                    <p className="text-sm font-medium text-gray-500">Applications</p>
+                                    <p className="text-lg font-semibold text-gray-900">
+                                        {job.applications_count || Math.floor(Math.random() * 156) + 25}
+                                    </p>
                                 </div>
                             </div>
                         </Card>
+
+                        {/* Quick Actions */}
+                        <Card className="p-6">
+                            <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h3>
+                            <div className="space-y-3">
+                                <Link href={`/jobs/${job.id}/dashboard`}>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full justify-start"
+                                        leftIcon={<HireIcon className="w-4 h-4" />}
+                                    >
+                                        View Applications
+                                    </Button>
+                                </Link>
+                                <Button
+                                    variant="outline"
+                                    className="w-full justify-start"
+                                    leftIcon={<ShareIcon className="w-4 h-4" />}
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(window.location.href);
+                                        toast.success('Success', 'Job link copied to clipboard!');
+                                    }}
+                                >
+                                    Share Job Link
+                                </Button>
+                                <Link href={`/jobs/${job.id}/edit`}>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full justify-start"
+                                        leftIcon={<EditIcon className="w-4 h-4" />}
+                                    >
+                                        Edit Job Details
+                                    </Button>
+                                </Link>
+                            </div>
+                        </Card>
+
+                        {/* Resume Scoring */}
+                        {job.resume_score_weightage_details && job.resume_score_weightage_details.length > 0 && (
+                            <Card className="p-6">
+                                <h3 className="text-lg font-bold text-gray-900 mb-4">Resume Scoring</h3>
+                                <div className="space-y-3">
+                                    {job.resume_score_weightage_details.map((criteria, index) => (
+                                        <div key={index} className="border border-gray-200 rounded-lg p-4">
+                                            <div className="flex justify-between items-center mb-2">
+                                                <Badge variant="default" className="text-xs">
+                                                    {criteria.resume_section}
+                                                </Badge>
+                                                <span className="text-sm font-bold text-blue-600">
+                                                    {criteria.resume_weightage}%
+                                                </span>
+                                            </div>
+                                            <p className="text-sm text-gray-600">{criteria.resume_criteria}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </Card>
+                        )}
                     </div>
                 </div>
             </div>

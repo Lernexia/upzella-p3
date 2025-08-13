@@ -1,110 +1,193 @@
-# 🚀 Upzella Job Creation API
+# Job Creation Service
 
-Express.js backend service for Upzella's AI-powered job creation and management system.
+A Node.js microservice for managing job postings with AI-powered extraction capabilities using Google Gemini AI.
 
-## 🎯 Overview
+## 🚀 Overview
 
-This backend service provides APIs for:
-- Creating and managing job postings
-- AI-powered job description extraction from uploaded files
-- Resume scoring configuration management
-- Supabase PostgreSQL integration with RLS
-- File storage via Supabase Storage
+The Job Creation Service handles all job-related operations including CRUD operations, AI-powered job description extraction, and resume scoring criteria management. It provides RESTful APIs for creating, updating, retrieving, and managing job postings with enhanced features like location details, salary information, and automated resume scoring.
 
-## 🛠️ Tech Stack
+## 🛠 Tech Stack
 
-- **Backend**: Express.js + TypeScript
-- **Database**: Supabase PostgreSQL
-- **AI**: Google Gemini (gemini-1.5-flash)
-- **Storage**: Supabase Storage
-- **Validation**: Joi
+- **Runtime**: Node.js with TypeScript
+- **Framework**: Express.js
+- **Database**: Supabase (PostgreSQL)
+- **AI Integration**: Google Gemini AI (vertex-ai)
+- **Authentication**: JWT Bearer tokens
+- **Validation**: Joi validation schemas
+- **Testing**: Jest
 - **Logging**: Winston
-- **File Processing**: pdf-parse, mammoth (for DOCX)
+- **Rate Limiting**: express-rate-limit
+- **File Upload**: Multer
+- **Environment**: dotenv
 
-## 📦 Installation
+## 📋 Prerequisites
 
-1. **Clone and navigate to the project**:
+- Node.js 18+
+- npm or yarn
+- Supabase project with database setup
+- Google Cloud Project with Vertex AI enabled
+
+## 🏗 Installation
+
+1. **Clone and navigate to the service:**
    ```bash
    cd backend/job_creation
    ```
 
-2. **Install dependencies**:
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-3. **Set up environment variables**:
+3. **Environment setup:**
    ```bash
    cp env.example .env
    ```
-
-4. **Configure your `.env` file**:
+   
+   Configure the following variables:
    ```env
+   PORT=8001
    NODE_ENV=development
-   PORT=3001
    
    # Supabase Configuration
-   SUPABASE_URL=https://your-project-id.supabase.co
+   SUPABASE_URL=your_supabase_url
    SUPABASE_ANON_KEY=your_supabase_anon_key
    SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
    
-   # Google Gemini AI
-   GOOGLE_AI_API_KEY=your_google_ai_api_key
+   # Google AI Configuration
+   GOOGLE_PROJECT_ID=your_google_project_id
+   GOOGLE_LOCATION=your_google_location
+   GOOGLE_APPLICATION_CREDENTIALS=path/to/service-account.json
    
-   # Frontend URL for CORS
-   FRONTEND_URL=http://localhost:3000
-   
-   # File Upload Settings
-   MAX_FILE_SIZE=10485760
-   UPLOAD_PATH=uploads/
-   ALLOWED_FILE_TYPES=pdf,docx,txt
-   
-   # Logging
-   LOG_LEVEL=info
+   # Security
+   JWT_SECRET=your_jwt_secret
    ```
 
-## 🗃️ Database Schema
+4. **Run the service:**
+   ```bash
+   # Development
+   npm run dev
+   
+   # Production
+   npm run build
+   npm start
+   
+   # Testing
+   npm test
+   ```
 
-The service uses the following Supabase tables:
+## � Project Structure
 
-### Jobs Table
-```sql
-- id (uuid, primary key)
-- company_id (uuid, foreign key to companies)
-- title (text)
-- description (text)
-- skills_required (text[])
-- work_type (text[])
-- employment_type (text)
-- experience_min (integer)
-- experience_max (integer)
-- resume_threshold (integer, default 60)
-- created_at, updated_at (timestamptz)
+```
+src/
+├── server.ts              # Main application entry point
+├── controllers/
+│   └── jobs.controller.ts  # Job-related HTTP request handlers
+├── db/
+│   ├── index.ts           # Database connection and client setup
+│   └── migrations.sql     # Database schema and migrations
+├── middleware/
+│   ├── auth.ts            # JWT authentication middleware
+│   └── errorHandler.ts    # Global error handling middleware
+├── routes/
+│   └── jobs.routes.ts     # Job API route definitions
+├── services/
+│   ├── ai.service.ts      # Google Gemini AI integration service
+│   └── jobs.service.ts    # Business logic for job operations
+├── utils/
+│   └── logger.ts          # Winston logging configuration
+├── validators/
+│   └── jobValidation.ts   # Joi validation schemas for job data
+└── __tests__/
+    ├── setup.ts           # Test environment configuration
+    └── jobs.test.ts       # Comprehensive test suites
 ```
 
-### Resume Scoring Weights Table
-```sql
-- id (uuid, primary key)
-- job_id (uuid, foreign key to jobs)
-- section_name (text)
-- criteria_description (text)
-- weightage (integer)
-- created_at (timestamptz)
+### 📄 File Descriptions
+
+- **`server.ts`**: Express application setup with middleware, routes, and error handling
+- **`controllers/jobs.controller.ts`**: HTTP request/response handlers for job endpoints
+- **`db/index.ts`**: Supabase client configuration and database connection
+- **`db/migrations.sql`**: Database schema definitions and migration scripts
+- **`middleware/auth.ts`**: JWT token validation and user authentication
+- **`middleware/errorHandler.ts`**: Centralized error handling and response formatting
+- **`routes/jobs.routes.ts`**: Express route definitions with middleware integration
+- **`services/ai.service.ts`**: Google Gemini AI service for job description extraction
+- **`services/jobs.service.ts`**: Core business logic for job CRUD operations
+- **`utils/logger.ts`**: Winston logger configuration for request/error logging
+- **`validators/jobValidation.ts`**: Joi schemas for request data validation
+
+## 🔗 API Endpoints
+
+For complete API documentation, see: [Job Creation API Documentation](../../api-docs-jobcreation.md)
+
+### Core Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/health` | Service health check |
+| `POST` | `/api/jobs` | Create new job posting |
+| `GET` | `/api/jobs` | List all jobs with pagination |
+| `GET` | `/api/jobs/{id}` | Get specific job details |
+| `PUT` | `/api/jobs/{id}` | Update job posting |
+| `DELETE` | `/api/jobs/{id}` | Delete job posting |
+| `POST` | `/api/jobs/ai-extract` | Extract job details using AI |
+| `GET` | `/api/jobs/{id}/scoring-weights` | Get resume scoring criteria |
+| `PUT` | `/api/jobs/{id}/scoring-weights` | Update resume scoring criteria |
+
+### Key Features
+
+- **AI-Powered Extraction**: Automatically extract structured job data from plain text descriptions
+- **Enhanced Job Schema**: Support for location details, salary ranges, experience requirements
+- **Resume Scoring**: Configurable criteria for automatic resume evaluation
+- **Multi-select Support**: Work types, employment types, and seniority levels
+- **Rate Limiting**: 100 requests per 15-minute window
+- **File Upload**: Support for job description document uploads
+- **Data Validation**: Comprehensive input validation using Joi schemas
+
+## 🧪 Testing
+
+Run the test suite:
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
 ```
 
-### AI Models Table
-```sql
-- id (uuid, primary key)
-- user_id (uuid, foreign key to employers)
-- model_name (text)
-- provider (text)
-- configs (jsonb)
-- created_at (timestamptz)
-```
+Test coverage includes:
+- Job creation and validation
+- AI extraction functionality
+- Authentication middleware
+- Error handling scenarios
+- Database operations
 
-## 🚀 Running the Server
+## � Database Schema
 
-### Development Mode
+The service uses the following main table:
+
+**Jobs Table Structure:**
+- Enhanced JSON fields for location, salary, and experience details
+- Array fields for skills, work types, and employment types
+- Resume scoring criteria stored as JSONB
+- Row Level Security (RLS) enabled
+
+## 🔒 Security Features
+
+- **JWT Authentication**: Bearer token validation for all protected endpoints
+- **Rate Limiting**: Prevents API abuse with configurable limits
+- **Input Validation**: Joi schemas validate all incoming data
+- **SQL Injection Protection**: Parameterized queries via Supabase client
+- **Error Handling**: Secure error messages without sensitive data exposure
+
+## 🚀 Deployment
+
+### Development
 ```bash
 npm run dev
 ```
@@ -115,197 +198,54 @@ npm run build
 npm start
 ```
 
-### Health Check
-Visit: `http://localhost:3001/health`
-
-## 📡 API Endpoints
-
-### Authentication
-All endpoints require Bearer token authentication in the header:
-```
-Authorization: Bearer <supabase_jwt_token>
-```
-
-### 1. Create Job
-```http
-POST /api/jobs
-Content-Type: application/json
-
-{
-  "company_id": "uuid",
-  "title": "Backend Developer",
-  "description": "We are looking for...",
-  "skills_required": ["Node.js", "PostgreSQL"],
-  "work_type": ["Full-time", "Remote"],
-  "employment_type": "Permanent",
-  "experience_min": 2,
-  "experience_max": 5,
-  "resume_threshold": 60,
-  "resume_scoring": [
-    {
-      "section_name": "Education",
-      "criteria_description": "Bachelor's degree",
-      "weightage": 20
-    },
-    {
-      "section_name": "Experience",
-      "criteria_description": "2+ years backend",
-      "weightage": 40
-    },
-    {
-      "section_name": "Skills",
-      "criteria_description": "Technical skills",
-      "weightage": 25
-    },
-    {
-      "section_name": "Projects",
-      "criteria_description": "Relevant projects",
-      "weightage": 15
-    }
-  ]
-}
-```
-
-### 2. AI Job Extraction
-```http
-POST /api/jobs/ai-extract
-Content-Type: multipart/form-data
-
-company_id: uuid
-file: job_description.pdf (or .docx, .txt)
-```
-
-### 3. Get Jobs (Paginated)
-```http
-GET /api/jobs?limit=50&offset=0
-```
-
-### 4. Get Single Job
-```http
-GET /api/jobs/:job_id
-```
-
-### 5. Update Job
-```http
-PUT /api/jobs/:job_id
-Content-Type: application/json
-
-{
-  "title": "Updated Job Title",
-  "description": "Updated description..."
-}
-```
-
-### 6. Delete Job
-```http
-DELETE /api/jobs/:job_id
-```
-
-## 🔐 Security Features
-
-- **Row Level Security (RLS)**: Enabled on all tables
-- **Company Isolation**: Users can only access their company's data
-- **File Validation**: Type and size restrictions on uploads
-- **Input Validation**: Joi schemas for all endpoints
-- **Authentication**: JWT token validation via Supabase Auth
-- **CORS**: Configured for frontend domain
-
-## 🧪 Testing
-
-### Run Tests
+### Docker Support
+The service includes Dockerfile and can be containerized:
 ```bash
-npm test
-```
-
-### Test Cases
-- Job creation with valid data
-- Job creation with invalid weightage (not 100%)
-- AI extraction from PDF/DOCX files
-- Authentication and authorization
-- Company access validation
-- File upload validation
-
-## 📁 Project Structure
-
-```
-src/
-├── controllers/
-│   └── jobs.controller.ts       # Request handling logic
-├── services/
-│   ├── jobs.service.ts          # Job CRUD operations
-│   ├── ai.service.ts            # Google Gemini integration
-│   └── file.service.ts          # File upload/processing
-├── routes/
-│   └── jobs.routes.ts           # API route definitions
-├── middleware/
-│   ├── auth.ts                  # Authentication middleware
-│   └── errorHandler.ts          # Global error handling
-├── validators/
-│   └── jobValidation.ts         # Joi validation schemas
-├── db/
-│   └── index.ts                 # Supabase client & types
-├── utils/
-│   └── logger.ts                # Winston logging setup
-└── server.ts                    # Express app entry point
+docker build -t job-creation-service .
+docker run -p 8001:8001 job-creation-service
 ```
 
 ## 🔧 Configuration
 
-### Supported File Types
-- **PDF**: `.pdf` files (parsed with pdf-parse)
-- **Word**: `.docx` files (parsed with mammoth)
-- **Text**: `.txt` files (direct reading)
+### Environment Variables
+- `PORT`: Server port (default: 8001)
+- `NODE_ENV`: Environment mode (development/production/test)
+- `SUPABASE_*`: Database connection configuration
+- `GOOGLE_*`: AI service configuration
+- `JWT_SECRET`: Token signing secret
 
-### AI Model Configuration
-- **Default Model**: Google Gemini 1.5 Flash
-- **Temperature**: 0 (deterministic output)
-- **Response Format**: Structured JSON
+### Rate Limiting
+- Standard endpoints: 100 requests/15 minutes
+- AI processing: 10 requests/minute
+- File uploads: 5 requests/minute
 
-### Storage Configuration
-- **Bucket**: `job_descriptions` (Supabase Storage)
-- **Max File Size**: 10MB
-- **Public Access**: Read-only for authenticated users
+## � Logging
 
-## 🐛 Error Handling
+Winston logger with multiple transports:
+- Console output for development
+- File logging (`logs/combined.log`, `logs/error.log`)
+- Structured JSON format for production
 
-All API responses follow this format:
+## 🤝 Contributing
 
-**Success Response**:
-```json
-{
-  "status": "success",
-  "message": "Operation completed successfully",
-  "data": { ... }
-}
-```
-
-**Error Response**:
-```json
-{
-  "status": "error",
-  "statusCode": 400,
-  "message": "Detailed error message"
-}
-```
-
-## 📊 Logging
-
-Logs are written to:
-- **Console**: All levels (development)
-- **logs/error.log**: Error level only
-- **logs/combined.log**: All levels
-
-Log levels: error, warn, info, http, verbose, debug, silly
-
-## 🚀 Deployment
-
-1. Build the project: `npm run build`
-2. Set production environment variables
-3. Ensure Supabase database and storage are configured
-4. Run: `npm start`
-
+1. Follow TypeScript best practices
+2. Add tests for new features
+3. Update API documentation
+4. Use conventional commit messages
+5. Ensure all tests pass before submitting
 
 ## 📞 Support
+
+For technical issues or questions:
+- Check the API documentation
+- Review the test suite for usage examples
+- Consult the error logs for debugging information
+
+---
+
+**Service URL**: `http://localhost:8001`  
+**Health Check**: `GET /health`  
+**Documentation**: [API Documentation](../../api-docs-jobcreation.md)
 
 For issues or questions:
 - Check the logs in `logs/` directory
