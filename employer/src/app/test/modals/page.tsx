@@ -195,7 +195,7 @@ export default function ModalsTestPage() {
             <div className="card">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="font-accent text-lg font-semibold text-gray-800 mb-3">Do's</h3>
+                  <h3 className="font-accent text-lg font-semibold text-gray-800 mb-3">Do&apos;s</h3>
                   <ul className="space-y-2 font-body text-gray-600">
                     <li>• Use modals for focused tasks</li>
                     <li>• Provide clear close mechanisms</li>
@@ -206,14 +206,14 @@ export default function ModalsTestPage() {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="font-accent text-lg font-semibold text-gray-800 mb-3">Don'ts</h3>
+                  <h3 className="font-accent text-lg font-semibold text-gray-800 mb-3">Don&apos;ts</h3>
                   <ul className="space-y-2 font-body text-gray-600">
-                    <li>• Don't use for complex workflows</li>
-                    <li>• Don't stack too many modals</li>
-                    <li>• Don't make modals too small</li>
-                    <li>• Don't auto-open modals on page load</li>
-                    <li>• Don't use for critical information</li>
-                    <li>• Don't disable underlying page interaction permanently</li>
+                    <li>• Don&apos;t use for complex workflows</li>
+                    <li>• Don&apos;t stack too many modals</li>
+                    <li>• Don&apos;t make modals too small</li>
+                    <li>• Don&apos;t auto-open modals on page load</li>
+                    <li>• Don&apos;t use for critical information</li>
+                    <li>• Don&apos;t disable underlying page interaction permanently</li>
                   </ul>
                 </div>
               </div>

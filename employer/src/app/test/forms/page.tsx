@@ -438,7 +438,7 @@ export default function FormsTestPage() {
             <div className="card">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="font-accent text-lg font-semibold text-gray-800 mb-3">Do's</h3>
+                  <h3 className="font-accent text-lg font-semibold text-gray-800 mb-3">Do&apos;s</h3>
                   <ul className="space-y-2 font-body text-gray-600">
                     <li>• Use clear, descriptive labels</li>
                     <li>• Provide helpful placeholder text</li>
@@ -449,14 +449,14 @@ export default function FormsTestPage() {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="font-accent text-lg font-semibold text-gray-800 mb-3">Don'ts</h3>
+                  <h3 className="font-accent text-lg font-semibold text-gray-800 mb-3">Don&apos;ts</h3>
                   <ul className="space-y-2 font-body text-gray-600">
-                    <li>• Don't use vague error messages</li>
-                    <li>• Don't make forms unnecessarily long</li>
-                    <li>• Don't hide important information</li>
-                    <li>• Don't use placeholders as labels</li>
-                    <li>• Don't validate on every keystroke</li>
-                    <li>• Don't disable the submit button permanently</li>
+                    <li>• Don&apos;t use vague error messages</li>
+                    <li>• Don&apos;t make forms unnecessarily long</li>
+                    <li>• Don&apos;t hide important information</li>
+                    <li>• Don&apos;t use placeholders as labels</li>
+                    <li>• Don&apos;t validate on every keystroke</li>
+                    <li>• Don&apos;t disable the submit button permanently</li>
                   </ul>
                 </div>
               </div>
