@@ -1,21 +1,10 @@
 const nextConfig = {
-  experimental: {
-    serverExternalPackages: ["pdf2json"],
-  },
+  serverExternalPackages: ["pdf2json"],
   typescript: {
     ignoreBuildErrors: true,
   },
   eslint: {
-    ignoreDuringBuilds: false,
-    // Custom ESLint rules to suppress specific errors
-    rules: {
-      "@typescript-eslint/no-explicit-any": "off", // covers all locations of 'Unexpected any. Specify a different type.'
-      "@typescript-eslint/no-empty-interface": "off",
-      "@typescript-eslint/no-empty-object-type": "off",
-      "@typescript-eslint/no-unused-vars": "off",
-      "prefer-const": "off",
-      "react/no-unescaped-entities": "off",
-    },
+    ignoreDuringBuilds: true,
   },
 };
 
