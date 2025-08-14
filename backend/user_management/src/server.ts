@@ -54,7 +54,10 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 // Security middleware
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: [process.env.FRONTEND_URL || 'http://localhost:3000', 'https://employer.upzella.in'],
+  credentials: true
+}));
 app.use(compression());
 
 
