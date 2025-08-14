@@ -36,6 +36,7 @@ export interface CreateJobRequest {
     reason: string;
   }>;
   original_job_description_text?: string;
+  status?: 'draft' | 'published' | 'paused' | 'closed';
 }
 
 export interface Job {

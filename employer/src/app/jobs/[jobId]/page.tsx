@@ -7,6 +7,7 @@ import { JobService, Job } from '@/services/job.service';
 import { Button } from '@/components/ui-components/Button';
 import { Card } from '@/components/ui-components/Card';
 import { Badge } from '@/components/ui-components/Badge';
+import { Select } from '@/components/ui-components/Select';
 import { UpzellaLoader } from '@/components/ui-components/loader';
 import { StatsContainer, StatItem } from '@/components/ui-components/StatsContainer';
 import { Logo } from '@/components/Logo';
@@ -30,9 +31,11 @@ import {
 } from '@/components/svg-icons';
 import { useToast } from '@/hooks/useToast';
 import { GradientBar } from '@/components/ui-components/GradientBar';
+import { Company } from '@/lib/schema/company.schema';
+import { companyService } from '@/services/companies.service';
 
 export default function JobDetailPage() {
-    const [job, setJob] = useState<Job | null>(null);
+    const [job, setJob] = useState<{ job: Job; company: Company } | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [deleting, setDeleting] = useState(false);
@@ -53,7 +56,8 @@ export default function JobDetailPage() {
             setLoading(true);
             setError(null);
             const jobData = await JobService.getJob(jobId);
-            setJob(jobData);
+            const companyData = await companyService.getCompanyById(jobData.company_id);
+            setJob({ job: jobData, company: companyData! });
         } catch (error) {
             console.error('Error loading job:', error);
             setError('Failed to load job. Please try again.');
@@ -70,7 +74,7 @@ export default function JobDetailPage() {
 
         try {
             setDeleting(true);
-            await JobService.deleteJob(job.id);
+            await JobService.deleteJob(job.job.id);
             toast.success('Success', 'Job deleted successfully');
             router.push('/jobs');
         } catch (error) {
@@ -85,12 +89,14 @@ export default function JobDetailPage() {
     const formatSalary = (salary: any) => {
         if (!salary) return 'Not specified';
         if (typeof salary === 'object') {
-            const { min, max, currency = 'USD' } = salary;
-            if (min && max) {
-                return `${currency} ${min.toLocaleString()} - ${max.toLocaleString()}`;
+
+            const { salary_currency, salary_from, salary_to, salary_period } = salary;
+            if (!salary_from || !salary_to) return 'Not specified';
+            if (salary_from && salary_to) {
+                return `${salary_currency} ${salary_from.toLocaleString()} - ${salary_to.toLocaleString()} ${salary_period}`;
             }
-            if (min) return `From ${currency} ${min.toLocaleString()}`;
-            if (max) return `Up to ${currency} ${max.toLocaleString()}`;
+
+
         }
         return salary.toString();
     };
@@ -98,12 +104,13 @@ export default function JobDetailPage() {
     const formatLocation = (location: any) => {
         if (!location) return 'Not specified';
         if (typeof location === 'object') {
-            const { city, state, country, remote } = location;
+
+
+            const { location_country, location_state, location_city, location_pin_code } = location;
             let locationStr = '';
-            if (city) locationStr += city;
-            if (state) locationStr += (locationStr ? ', ' : '') + state;
-            if (country) locationStr += (locationStr ? ', ' : '') + country;
-            if (remote) locationStr += (locationStr ? ' • ' : '') + 'Remote Available';
+            if (location_city) locationStr += location_city;
+            if (location_state) locationStr += (locationStr ? ', ' : '') + location_state;
+            if (location_country) locationStr += (locationStr ? ', ' : '') + location_country;
             return locationStr || 'Not specified';
         }
         return location.toString();
@@ -112,12 +119,12 @@ export default function JobDetailPage() {
     const formatExperience = (experience: any) => {
         if (!experience) return 'Not specified';
         if (typeof experience === 'object') {
-            const { min, max, unit = 'years' } = experience;
-            if (min && max) {
-                return `${min}-${max} ${unit}`;
+            const { experience_min, experience_max } = experience;
+            if (experience_min && experience_max) {
+                return `${experience_min}-${experience_max} years`;
             }
-            if (min) return `${min}+ ${unit}`;
-            if (max) return `Up to ${max} ${unit}`;
+            if (experience_min) return `${experience_min}+ years`;
+            if (experience_max) return `Up to ${experience_max} years`;
         }
         return experience.toString();
     };
@@ -133,10 +140,9 @@ export default function JobDetailPage() {
     const getStatusColor = (status: string) => {
         const statusColors: Record<string, any> = {
             'draft': 'secondary',
-            'active': 'success',
+            'published': 'success',
             'paused': 'warning',
             'closed': 'error',
-            'archived': 'default'
         };
         return statusColors[status] || 'default';
     };
@@ -245,207 +251,180 @@ export default function JobDetailPage() {
                                 <GradientBar color='blue' />
                             </div>
                             <div className='flex flex-col'>
-                                <h1 className="text-xl font-heading font-bold text-slate-900">Job Dashboard</h1>
+                                <h1 className="text-xl font-heading font-bold text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-950">{job.job.title}</h1>
                                 <p className="text-slate-600 font-body">
-                                    Analytics and applications for "{job.title}"
+                                    {job.company.name}
                                 </p>
                             </div>
                         </div>
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
+                        {/* <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
                             <ViewIcon className="w-5 h-5 text-white" />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
 
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6 relative">
+                {/* Grain effect overlay */}
 
-
-            <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-16">
-                        <div className="flex items-center space-x-4">
-                            <Logo size="sm" />
-                            <div className="w-px h-6 bg-gray-300"></div>
-                            <Link
-                                href="/jobs"
-                                className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
-                            >
-                                <ArrowLeftIcon className="w-4 h-4 mr-2" />
-                                Back to Jobs
-                            </Link>
+                <div className='sizer relative z-10'>
+                    <div className="flex items-start space-x-6">
+                        <div className="flex-shrink-0">
+                            {job.company.logo_url ? (
+                                <img
+                                    src={job.company.logo_url}
+                                    alt={job.company.name}
+                                    className="w-20 h-20 rounded-[14px] object-cover bg-white shadow-2xl border border-white/40 backdrop-blur-[2px]"
+                                />
+                            ) : (
+                                <div className="w-20 h-20 bg-white/80 rounded-xl flex items-center justify-center shadow-2xl border border-white/40 backdrop-blur-[2px]">
+                                    <CompanyIcon className="w-10 h-10 text-blue-600" />
+                                </div>
+                            )}
                         </div>
+                        <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-3 mb-2">
+                                <h2 className="text-2xl font-bold text-white truncate drop-shadow-lg">
+                                    {job.job.title}
+                                </h2>
+                                {job.job.role_name && job.job.role_name !== job.job.title && (
+                                    <Badge variant='primary' className="bg-white/30 text-white border-white/40 shadow-md backdrop-blur-[2px]">
+                                        {job.job.role_name}
+                                    </Badge>
+                                )}
+                            </div>
+                            <p className="text-xl text-blue-100 font-medium mb-4 drop-shadow">
+                                {job.company.name}
+                            </p>
+
+                            {/* Job Details Row */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white/20 backdrop-blur-[6px] rounded-2xl p-6 border border-white/30 shadow-lg">
+                                <div className="flex items-center space-x-3">
+                                    <SalaryIcon className="w-10 h-10 text-white/90 drop-shadow" />
+                                    <div>
+                                        <p className="text-sm text-blue-100/90">Salary</p>
+                                        <p className="text-white font-semibold drop-shadow">
+                                            {formatSalary(job.job.salary_details)}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center space-x-3">
+                                    <LocationIcon className="w-5 h-5 text-white/90 drop-shadow" />
+                                    <div>
+                                        <p className="text-sm text-blue-100/90">Location</p>
+                                        <p className="text-white font-semibold drop-shadow">
+                                            {formatLocation(job.job.location_details)}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center space-x-3">
+                                    <UserIcon className="w-5 h-5 text-white/90 drop-shadow" />
+                                    <div>
+                                        <p className="text-sm text-blue-100/90">Experience</p>
+                                        <p className="text-white font-semibold drop-shadow">
+                                            {formatExperience(job.job.experience_details)}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Status and Work Type */}
+                    <div className="flex flex-wrap items-center gap-3 mt-6">
+                        <div className="flex items-center space-x-2">
+                            <Badge variant={getStatusColor(job.job.status!)} className="capitalize ">
+                                {job.job.status}
+                            </Badge>
+                        </div>
+                        {job.job.employment_type?.map((type, idx) => (
+                            <Badge key={idx} variant="default" >
+                                {type.replace('-', ' ')}
+                            </Badge>
+                        ))}
+                        {job.job.work_type?.map((type, idx) => (
+                            <Badge key={idx} variant="secondary" >
+                                {type}
+                            </Badge>
+                        ))}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-wrap gap-4 mt-8 items-center">
+                        {/* Status Changer Dropdown (Upzella Select) */}
+                        <div className="min-w-[140px]">
+                            <Select
+                                value={job.job.status}
+                                onChange={async (newStatus: any) => {
+                                    try {
+                                        await JobService.updateJob(job.job.id, (newStatus !== 'published') ? { status: newStatus } : {...job.job});
+                                        setJob((prev) => prev ? { ...prev, job: { ...prev.job, status: newStatus } } : prev);
+                                        toast.success('Status Updated', `Job status changed to ${newStatus}`);
+                                    } catch (err) {
+                                        toast.error('Error', 'Failed to update status.');
+                                    }
+                                }}
+                                disabled={deleting}
+                                options={[
+                                    { value: 'published', label: 'Published' },
+                                    { value: 'draft', label: 'Draft' },
+                                    { value: 'paused', label: 'Paused' },
+                                    { value: 'closed', label: 'Closed' },
+                                ]}
+                                className="text-sm font-medium"
+                            />
+                        </div>
+                        <Link href={`/jobs/${job.job.id}/dashboard`}>
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                className="bg-white text-blue-600 hover:bg-blue-50"
+                                leftIcon={<ViewIcon className="w-5 h-5" />}
+                            >
+                                View Dashboard
+                            </Button>
+                        </Link>
+                        <Link href={`/jobs/${job.job.id}/edit`}>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="bg-green-400 text-white hover:bg-green-400 hover:text-white hover:border-nono"
+                                leftIcon={<EditIcon className="w-5 h-5" />}
+                            >
+                                Edit Job
+                            </Button>
+                        </Link>
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
-                            onClick={() => {
-                                navigator.clipboard.writeText(window.location.href);
-                                toast.success('Success', 'Job link copied to clipboard!');
-                            }}
-                            leftIcon={<ShareIcon className="w-4 h-4" />}
+                            className="bg-red-500 text-red-100 hover:bg-red-500/80 hover:border-none"
+                            onClick={handleDelete}
+                            disabled={deleting}
+                            leftIcon={<DeleteIcon className="w-5 h-5" />}
                         >
-                            Share
+                            {deleting ? 'Deleting...' : 'Delete'}
                         </Button>
                     </div>
                 </div>
             </div>
 
             {/* Main Job Header Card */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <Card className="mb-8 overflow-hidden">
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-12">
-                        <div className="flex items-start space-x-6">
-                            <div className="flex-shrink-0">
-                                {job.company_logo ? (
-                                    <img
-                                        src={job.company_logo}
-                                        alt={job.company_name}
-                                        className="w-20 h-20 rounded-xl object-cover bg-white shadow-lg"
-                                    />
-                                ) : (
-                                    <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center shadow-lg">
-                                        <CompanyIcon className="w-10 h-10 text-blue-600" />
-                                    </div>
-                                )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <div className="flex items-center space-x-3 mb-2">
-                                    <h1 className="text-3xl font-bold text-white truncate">
-                                        {job.title}
-                                    </h1>
-                                    {job.role_name && job.role_name !== job.title && (
-                                        <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-                                            {job.role_name}
-                                        </Badge>
-                                    )}
-                                </div>
-                                <p className="text-xl text-blue-100 font-medium mb-4">
-                                    {job.company_name}
-                                </p>
-
-                                {/* Job Details Row */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                                    <div className="flex items-center space-x-3">
-                                        <SalaryIcon className="w-5 h-5 text-white" />
-                                        <div>
-                                            <p className="text-sm text-blue-100">Salary</p>
-                                            <p className="text-white font-semibold">
-                                                {formatSalary(job.salary_details)}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center space-x-3">
-                                        <LocationIcon className="w-5 h-5 text-white" />
-                                        <div>
-                                            <p className="text-sm text-blue-100">Location</p>
-                                            <p className="text-white font-semibold">
-                                                {formatLocation(job.location_details)}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center space-x-3">
-                                        <UserIcon className="w-5 h-5 text-white" />
-                                        <div>
-                                            <p className="text-sm text-blue-100">Experience</p>
-                                            <p className="text-white font-semibold">
-                                                {formatExperience(job.experience_details)}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Status and Work Type */}
-                        <div className="flex flex-wrap items-center gap-3 mt-6">
-                            <div className="flex items-center space-x-2">
-                                <span className="text-lg">{getStatusIcon(job.status!)}</span>
-                                <Badge variant={getStatusColor(job.status!)} className="capitalize">
-                                    {job.status}
-                                </Badge>
-                            </div>
-                            {job.employment_type?.map((type, idx) => (
-                                <Badge key={idx} variant="default" className="bg-white/20 text-white border-white/30">
-                                    {type.replace('-', ' ')}
-                                </Badge>
-                            ))}
-                            {job.work_type?.map((type, idx) => (
-                                <Badge key={idx} variant="secondary" className="bg-white/20 text-white border-white/30">
-                                    {type}
-                                </Badge>
-                            ))}
-                        </div>
-
-                        {/* Action Buttons */}
-                        <div className="flex flex-wrap gap-4 mt-8">
-                            <Link href={`/jobs/${job.id}/dashboard`}>
-                                <Button
-                                    variant="secondary"
-                                    size="lg"
-                                    className="bg-white text-blue-600 hover:bg-blue-50"
-                                    leftIcon={<ViewIcon className="w-5 h-5" />}
-                                >
-                                    View Dashboard
-                                </Button>
-                            </Link>
-                            <Link href={`/jobs/${job.id}/edit`}>
-                                <Button
-                                    variant="outline"
-                                    size="lg"
-                                    className="border-white/30 text-white hover:bg-white/10"
-                                    leftIcon={<EditIcon className="w-5 h-5" />}
-                                >
-                                    Edit Job
-                                </Button>
-                            </Link>
-                            <Button
-                                variant="outline"
-                                size="lg"
-                                className="border-red-300 text-red-100 hover:bg-red-500/20"
-                                onClick={handleDelete}
-                                disabled={deleting}
-                                leftIcon={<DeleteIcon className="w-5 h-5" />}
-                            >
-                                {deleting ? 'Deleting...' : 'Delete'}
-                            </Button>
-                        </div>
-                    </div>
-                </Card>
+            <div className="sizer">
 
                 {/* Stats Section */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    {generateJobStats(job).map((stat, index) => (
-                        <Card key={stat.id} className="p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                                    {stat.trending && stat.trendValue && (
-                                        <p className={`text-sm ${stat.trending === 'up' ? 'text-green-600' : stat.trending === 'down' ? 'text-red-600' : 'text-gray-600'}`}>
-                                            {stat.trending === 'up' ? '↗' : stat.trending === 'down' ? '↘' : '→'} {stat.trendValue}
-                                        </p>
-                                    )}
-                                </div>
-                                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${stat.colorVariant === 'blue' ? 'bg-blue-100' :
-                                        stat.colorVariant === 'purple' ? 'bg-purple-100' :
-                                            stat.colorVariant === 'green' ? 'bg-green-100' :
-                                                'bg-orange-100'
-                                    }`}>
-                                    {stat.colorVariant === 'blue' && <UserIcon className="w-6 h-6 text-blue-600" />}
-                                    {stat.colorVariant === 'purple' && <ViewIcon className="w-6 h-6 text-purple-600" />}
-                                    {stat.colorVariant === 'green' && <StarIcon className="w-6 h-6 text-green-600" />}
-                                    {stat.colorVariant === 'orange' && <ClockIcon className="w-6 h-6 text-orange-600" />}
-                                </div>
-                            </div>
-                        </Card>
-                    ))}
-                </div>
+                <StatsContainer
+                    stats={generateJobStats(job.job)}
+                    cols={4}
+                    gap={6}
+                    className="mb-8"
+                />
 
                 {/* Content Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Content */}
                     <div className="lg:col-span-2 space-y-8">
                         {/* Job Description */}
-                        <Card className="p-8">
+                        <Card className="p-5">
                             <div className="flex items-center space-x-3 mb-6">
                                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                                     <JobIcon className="w-5 h-5 text-blue-600" />
@@ -454,7 +433,7 @@ export default function JobDetailPage() {
                             </div>
                             <div className="prose prose-gray max-w-none">
                                 <div className="text-gray-700 leading-relaxed space-y-4">
-                                    {job.description.split('\n').map((paragraph, index) => (
+                                    {job.job.description.split('\n').map((paragraph, index) => (
                                         paragraph.trim() && (
                                             <p key={index} className="mb-4">
                                                 {paragraph.trim()}
@@ -466,83 +445,100 @@ export default function JobDetailPage() {
                         </Card>
 
                         {/* Skills Required */}
-                        {job.skills_required && job.skills_required.length > 0 && (
-                            <Card className="p-8">
+                        {job.job.skills_required && job.job.skills_required.length > 0 && (
+                            <Card className="p-5">
                                 <div className="flex items-center space-x-3 mb-6">
                                     <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
                                         <SparkleIcon className="w-5 h-5 text-purple-600" />
                                     </div>
                                     <h2 className="text-xl font-bold text-gray-900">Skills & Technologies</h2>
                                 </div>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                    {job.skills_required.map((skill, index) => (
-                                        <Badge
-                                            key={index}
-                                            variant="secondary"
-                                            className="justify-center py-2 text-center"
-                                        >
-                                            {skill}
-                                        </Badge>
-                                    ))}
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                                    {job.job.skills_required.map((skill, index) => {
+                                        const variants = ["success", "error", "primary", "info"];
+                                        const variant = variants[index % variants.length];
+                                        return (
+                                            <Badge
+                                                key={index}
+                                                variant={variant as any}
+                                                className="justify-center py-2 text-center"
+                                            >
+                                                {skill}
+                                            </Badge>
+                                        );
+                                    })}
+
                                 </div>
                             </Card>
                         )}
 
-                        {/* Benefits */}
-                        {job.compensation && job.compensation.length > 0 && (
-                            <Card className="p-8">
-                                <div className="flex items-center space-x-3 mb-6">
-                                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                                        <StarIcon className="w-5 h-5 text-green-600" />
-                                    </div>
-                                    <h2 className="text-xl font-bold text-gray-900">Benefits & Perks</h2>
+                        {/* Resume Scoring */}
+                        {job.job.resume_score_weightage_details && job.job.resume_score_weightage_details.length > 0 && (
+                            <Card className="p-5">
+                                <div className='flex items-center justify-between mb-4'>
+                                    <h3 className="text-lg font-bold text-gray-900">Resume Scoring</h3>
+                                    <span className='text-sm font-semibold text-gray-700'>Total: {job.job.resume_score_weightage_details.reduce((acc, curr) => acc + curr.resume_weightage, 0)}%</span>
                                 </div>
                                 <div className="space-y-3">
-                                    {job.compensation.map((benefit, index) => (
-                                        <div key={index} className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
-                                            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                                                <span className="text-white text-sm">✓</span>
+                                    {job.job.resume_score_weightage_details.map((criteria, index) => (
+                                        <div key={index} className="border border-gray-200 rounded-lg p-4">
+                                            <div className="flex justify-between items-center mb-2">
+                                                <Badge variant="info" className="text-xs">
+                                                    {criteria.resume_section}
+                                                </Badge>
+                                                <span className="text-sm font-bold text-blue-600">
+                                                    {criteria.resume_weightage}%
+                                                </span>
                                             </div>
-                                            <span className="font-medium text-green-800">{benefit}</span>
+                                            <p className="text-sm text-gray-700 font-semibold">Criteria</p>
+                                            <p className="text-sm text-gray-600 italic ml-1">{criteria.resume_criteria}</p>
+                                            {/* Reason */}
+                                            {criteria.reason && (
+                                                <>
+                                                    <p className="text-sm text-gray-700 font-semibold">Reason</p>
+                                                    <p className="text-sm text-gray-600 italic ml-1">{criteria.reason}</p>
+                                                </>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
                             </Card>
                         )}
+
                     </div>
 
                     {/* Sidebar */}
                     <div className="space-y-6">
                         {/* Job Overview */}
-                        <Card className="p-6">
+                        <Card className="p-5">
                             <h3 className="text-lg font-bold text-gray-900 mb-4">Job Overview</h3>
                             <div className="space-y-4">
                                 <div>
                                     <p className="text-sm font-medium text-gray-500">Resume Threshold</p>
-                                    <p className="text-lg font-semibold text-gray-900">{job.resume_threshold}%</p>
+                                    <p className="text-lg font-semibold text-gray-900">{job.job.resume_threshold}%</p>
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium text-gray-500">Posted</p>
-                                    <p className="text-lg font-semibold text-gray-900">{formatDate(job.created_at)}</p>
+                                    <p className="text-lg font-semibold text-gray-900">{formatDate(job.job.created_at)}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium text-gray-500">Last Updated</p>
-                                    <p className="text-lg font-semibold text-gray-900">{formatDate(job.updated_at)}</p>
+                                    <p className="text-lg font-semibold text-gray-900">{formatDate(job.job.updated_at)}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium text-gray-500">Applications</p>
                                     <p className="text-lg font-semibold text-gray-900">
-                                        {job.applications_count || Math.floor(Math.random() * 156) + 25}
+                                        {job.job.applications_count || Math.floor(Math.random() * 156) + 25}
                                     </p>
                                 </div>
                             </div>
                         </Card>
 
                         {/* Quick Actions */}
-                        <Card className="p-6">
+                        <Card className="p-5 bg-gradient-to-tr from-purple-50 via-blue-50 to-pink-50">
                             <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h3>
                             <div className="space-y-3">
-                                <Link href={`/jobs/${job.id}/dashboard`}>
+                                <Link href={`/jobs/${job.job.id}/dashboard`}>
                                     <Button
                                         variant="outline"
                                         className="w-full justify-start"
@@ -553,7 +549,7 @@ export default function JobDetailPage() {
                                 </Link>
                                 <Button
                                     variant="outline"
-                                    className="w-full justify-start"
+                                    className="w-full justify-start mt-3"
                                     leftIcon={<ShareIcon className="w-4 h-4" />}
                                     onClick={() => {
                                         navigator.clipboard.writeText(window.location.href);
@@ -562,7 +558,7 @@ export default function JobDetailPage() {
                                 >
                                     Share Job Link
                                 </Button>
-                                <Link href={`/jobs/${job.id}/edit`}>
+                                <Link href={`/jobs/${job.job.id}/edit`}>
                                     <Button
                                         variant="outline"
                                         className="w-full justify-start"
@@ -574,22 +570,21 @@ export default function JobDetailPage() {
                             </div>
                         </Card>
 
-                        {/* Resume Scoring */}
-                        {job.resume_score_weightage_details && job.resume_score_weightage_details.length > 0 && (
-                            <Card className="p-6">
-                                <h3 className="text-lg font-bold text-gray-900 mb-4">Resume Scoring</h3>
+
+                        {/* Benefits */}
+                        {job.job.compensation && job.job.compensation.length > 0 && (
+                            <Card className="p-5">
+                                <div className="flex items-center space-x-3 mb-6">
+
+                                    <h2 className="text-xl font-bold text-gray-900">Benefits & Perks</h2>
+                                </div>
                                 <div className="space-y-3">
-                                    {job.resume_score_weightage_details.map((criteria, index) => (
-                                        <div key={index} className="border border-gray-200 rounded-lg p-4">
-                                            <div className="flex justify-between items-center mb-2">
-                                                <Badge variant="default" className="text-xs">
-                                                    {criteria.resume_section}
-                                                </Badge>
-                                                <span className="text-sm font-bold text-blue-600">
-                                                    {criteria.resume_weightage}%
-                                                </span>
+                                    {job.job.compensation.map((benefit, index) => (
+                                        <div key={index} className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
+                                            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                                <span className="text-white text-sm">✓</span>
                                             </div>
-                                            <p className="text-sm text-gray-600">{criteria.resume_criteria}</p>
+                                            <span className="font-medium text-green-800">{benefit}</span>
                                         </div>
                                     ))}
                                 </div>

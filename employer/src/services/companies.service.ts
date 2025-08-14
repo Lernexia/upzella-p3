@@ -157,56 +157,73 @@ export class CompanyService {
     }
   }
 
-    /**
-     * Get all companies for dropdown selection
-     */
-    async getCompanies(): Promise<CompanySelect[]> {
-      try {
-        const { data, error } = await this.supabase
-          .from("companies")
-          .select("id, name, domain, industry, employee_count, logo_url")
-          .order("name");
+  /**
+   * Get all companies for dropdown selection
+   */
+  async getCompanies(): Promise<CompanySelect[]> {
+    try {
+      const { data, error } = await this.supabase
+        .from("companies")
+        .select("id, name, domain, industry, employee_count, logo_url")
+        .order("name");
 
-        
-  
-        if (error) {
-          console.error("Error fetching companies:", error);
-          return [];
-        }
-  
-        return data || [];
-      } catch (error) {
-        console.error("Error in getCompanies:", error);
+      if (error) {
+        console.error("Error fetching companies:", error);
         return [];
       }
+
+      return data || [];
+    } catch (error) {
+      console.error("Error in getCompanies:", error);
+      return [];
     }
-  
-    /**
-     * Search companies by name for autocomplete
-     */
-    async searchCompanies(query: string): Promise<CompanySelect[]> {
-      try {
-        if (!query || query.length < 2) return [];
-  
-        const { data, error } = await this.supabase
-          .from("companies")
-          .select("id, name, domain, industry, employee_count, logo_url")
-          .ilike("name", `%${query}%`)
-          .limit(10)
-          .order("name");
-  
-        if (error) {
-          console.error("Error searching companies:", error);
-          return [];
-        }
-  
-        return data || [];
-      } catch (error) {
-        console.error("Error in searchCompanies:", error);
+  }
+
+  /**
+   * Search companies by name for autocomplete
+   */
+  async searchCompanies(query: string): Promise<CompanySelect[]> {
+    try {
+      if (!query || query.length < 2) return [];
+
+      const { data, error } = await this.supabase
+        .from("companies")
+        .select("id, name, domain, industry, employee_count, logo_url")
+        .ilike("name", `%${query}%`)
+        .limit(10)
+        .order("name");
+
+      if (error) {
+        console.error("Error searching companies:", error);
         return [];
       }
+
+      return data || [];
+    } catch (error) {
+      console.error("Error in searchCompanies:", error);
+      return [];
     }
-  
+  }
+
+  async getCompanyById(companyId: string): Promise<Company | null> {
+    try {
+      const { data, error } = await this.supabase
+        .from("companies")
+        .select("*")
+        .eq("id", companyId)
+        .single();
+
+      if (error) {
+        console.error("Error fetching company by ID:", error);
+        return null;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Error in getCompanyById:", error);
+      return null;
+    }
+  }
 }
 
 export const companyService = new CompanyService();
