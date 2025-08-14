@@ -8,7 +8,7 @@ import { Button } from '@/components/ui-components/Button';
 import { Card } from '@/components/ui-components/Card';
 import { Badge } from '@/components/ui-components/Badge';
 import { Select } from '@/components/ui-components/Select';
-import { UpzellaLoader } from '@/components/ui-components/loader';
+import { InlineLoader, UpzellaLoader } from '@/components/ui-components/loader';
 import { StatsContainer, StatItem } from '@/components/ui-components/StatsContainer';
 import { Logo } from '@/components/Logo';
 import {
@@ -39,6 +39,7 @@ export default function JobDetailPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [deleting, setDeleting] = useState(false);
+    const [statusUpdating, setStatusUpdating] = useState(false);
     const params = useParams();
     const router = useRouter();
     const { toast } = useToast();
@@ -167,7 +168,8 @@ export default function JobDetailPage() {
                 description: 'Candidates applied',
                 colorVariant: 'blue',
                 trending: 'up',
-                trendValue: '+12%'
+                trendValue: '+12%',
+                icon: HireIcon,
             },
             {
                 id: 'views',
@@ -176,7 +178,8 @@ export default function JobDetailPage() {
                 description: 'Job profile visits',
                 colorVariant: 'purple',
                 trending: 'up',
-                trendValue: '+8%'
+                trendValue: '+8%',
+                icon: ViewIcon,
             },
             {
                 id: 'match-rate',
@@ -185,7 +188,8 @@ export default function JobDetailPage() {
                 description: 'Average match score',
                 colorVariant: 'green',
                 trending: 'up',
-                trendValue: '+5%'
+                trendValue: '+5%',
+                icon: SparkleIcon,
             },
             {
                 id: 'days-active',
@@ -193,7 +197,8 @@ export default function JobDetailPage() {
                 value: Math.floor((Date.now() - new Date(job.created_at).getTime()) / (1000 * 60 * 60 * 24)).toString(),
                 description: 'Since publication',
                 colorVariant: 'orange',
-                trending: 'stable'
+                trending: 'stable',
+                icon: ClockIcon,
             }
         ];
     };
@@ -264,152 +269,209 @@ export default function JobDetailPage() {
                 </div>
             </div>
 
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6 relative">
-                {/* Grain effect overlay */}
 
-                <div className='sizer relative z-10'>
-                    <div className="flex items-start space-x-6">
-                        <div className="flex-shrink-0">
-                            {job.company.logo_url ? (
-                                <img
-                                    src={job.company.logo_url}
-                                    alt={job.company.name}
-                                    className="w-20 h-20 rounded-[14px] object-cover bg-white shadow-2xl border border-white/40 backdrop-blur-[2px]"
-                                />
-                            ) : (
-                                <div className="w-20 h-20 bg-white/80 rounded-xl flex items-center justify-center shadow-2xl border border-white/40 backdrop-blur-[2px]">
-                                    <CompanyIcon className="w-10 h-10 text-blue-600" />
-                                </div>
-                            )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <div className="flex items-center space-x-3 mb-2">
-                                <h2 className="text-2xl font-bold text-white truncate drop-shadow-lg">
-                                    {job.job.title}
-                                </h2>
-                                {job.job.role_name && job.job.role_name !== job.job.title && (
-                                    <Badge variant='primary' className="bg-white/30 text-white border-white/40 shadow-md backdrop-blur-[2px]">
-                                        {job.job.role_name}
-                                    </Badge>
-                                )}
-                            </div>
-                            <p className="text-xl text-blue-100 font-medium mb-4 drop-shadow">
-                                @{job.company.name}
-                            </p>
 
-                            {/* Job Details Row */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white/20 backdrop-blur-[6px] rounded-2xl p-6 border border-white/30 shadow-lg">
-                                <div className="flex items-center space-x-3">
-                                    <SalaryIcon className="w-10 h-10 text-white/90 drop-shadow" />
-                                    <div>
-                                        <p className="text-sm text-blue-100/90">Salary</p>
-                                        <p className="text-white font-semibold drop-shadow">
-                                            {formatSalary(job.job.salary_details)}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center space-x-3">
-                                    <LocationIcon className="w-5 h-5 text-white/90 drop-shadow" />
-                                    <div>
-                                        <p className="text-sm text-blue-100/90">Location</p>
-                                        <p className="text-white font-semibold drop-shadow">
-                                            {formatLocation(job.job.location_details)}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center space-x-3">
-                                    <UserIcon className="w-5 h-5 text-white/90 drop-shadow" />
-                                    <div>
-                                        <p className="text-sm text-blue-100/90">Experience</p>
-                                        <p className="text-white font-semibold drop-shadow">
-                                            {formatExperience(job.job.experience_details)}
-                                        </p>
-                                    </div>
+            {/* Main Job Header Card with Glassmorphism */}
+            <div className="sizer relative">
+                {/* Background Layer with Splash Gradient */}
+                <div className="relative mb-10 overflow-hidden rounded-3xl  backdrop-blur-3xl">
+                   
+                   <div className="absolute w-full h-full top-0 left-0 bg-gradient-to-r from-purple-300 to-blue-300"></div>
+                    {/* Grain effect overlay */}
+                    <div
+                        className="absolute inset-0 opacity-[0.15] mix-blend-multiply rounded-3xl"
+                        style={{
+                            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                            backgroundSize: '128px 128px'
+                        }}
+                    ></div>
+
+                    {/* Glassmorphism Card */}
+                    <div className="relative backdrop-blur-[6px] bg-white/2=40 border border-white/30 shadow-2xl rounded-3xl p-8">
+                        {/* Loading overlay for status updates */}
+                        {statusUpdating && (
+                            <div className="absolute inset-0 bg-white/60 backdrop-blur-sm rounded-3xl flex items-center justify-center z-50">
+                                <div className="flex items-center gap-3">
+                                    <InlineLoader
+                                        text='Updating status...'
+                                    />
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        )}
 
-                    {/* Status and Work Type */}
-                    <div className="flex flex-wrap items-center gap-3 mt-6">
-                        <div className="flex items-center space-x-2">
-                            <Badge variant={getStatusColor(job.job.status!)} className="capitalize ">
-                                {job.job.status}
-                            </Badge>
-                        </div>
-                        {job.job.employment_type?.map((type, idx) => (
-                            <Badge key={idx} variant="default" >
-                                {type.replace('-', ' ')}
-                            </Badge>
-                        ))}
-                        {job.job.work_type?.map((type, idx) => (
-                            <Badge key={idx} variant="secondary" >
-                                {type}
-                            </Badge>
-                        ))}
-                    </div>
+                        {/* Main Content Grid */}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                    {/* Action Buttons */}
-                    <div className="flex flex-wrap gap-4 mt-8 items-center">
-                        {/* Status Changer Dropdown (Upzella Select) */}
-                        <div className="min-w-[140px]">
-                            <Select
-                                value={job.job.status}
-                                onChange={async (newStatus: any) => {
-                                    try {
-                                        await JobService.updateJob(job.job.id, (newStatus !== 'published') ? { status: newStatus } : {...job.job});
-                                        setJob((prev) => prev ? { ...prev, job: { ...prev.job, status: newStatus } } : prev);
-                                        toast.success('Status Updated', `Job status changed to ${newStatus}`);
-                                    } catch (err) {
-                                        toast.error('Error', 'Failed to update status.');
-                                    }
-                                }}
-                                disabled={deleting}
-                                options={[
-                                    { value: 'published', label: 'Published' },
-                                    { value: 'draft', label: 'Draft' },
-                                    { value: 'paused', label: 'Paused' },
-                                    { value: 'closed', label: 'Closed' },
-                                ]}
-                                className="text-sm font-medium"
-                            />
+                            {/* Company & Job Info Section */}
+                            <div className="lg:col-span-2 space-y-6">
+                                {/* Company Logo & Basic Info */}
+                                <div className="flex items-start gap-6">
+                                    <div className="flex-shrink-0">
+                                        {job.company.logo_url ? (
+                                            <div className="relative">
+                                                <img
+                                                    src={job.company.logo_url}
+                                                    alt={job.company.name}
+                                                    className="w-20 h-20 rounded-2xl object-cover bg-white shadow-2xl border border-white/50 backdrop-blur-sm"
+                                                />
+                                                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/30 to-transparent"></div>
+                                            </div>
+                                        ) : (
+                                            <div className="w-20 h-20 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-2xl border border-white/50 relative">
+                                                <CompanyIcon className="w-10 h-10 text-slate-600" />
+                                                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/30 to-transparent"></div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-3 mb-2 flex-wrap">
+                                            <h1 className="text-3xl font-bold text-slate-800 drop-shadow-sm truncate">
+                                                {job.job.title}
+                                            </h1>
+                                            {job.job.role_name && job.job.role_name !== job.job.title && (
+                                                <Badge variant="primary" className="bg-blue-500/20 text-blue-700 border-blue-400/30 shadow-lg backdrop-blur-sm">
+                                                    {job.job.role_name}
+                                                </Badge>
+                                            )}
+                                        </div>
+                                        <p className="text-xl text-slate-600 font-medium mb-4 drop-shadow-sm">
+                                            @{job.company.name}
+                                        </p>
+
+                                        {/* Status & Types */}
+                                        <div className="flex flex-wrap items-center gap-2 mb-4">
+                                            <Badge variant={getStatusColor(job.job.status!)} className="capitalize shadow-lg backdrop-blur-sm">
+                                                {job.job.status}
+                                            </Badge>
+                                            {job.job.employment_type?.map((type, idx) => (
+                                                <Badge key={idx} variant="default" className="bg-slate-200/60 text-slate-700 border-slate-300/40 backdrop-blur-sm shadow-lg">
+                                                    {type.replace('-', ' ')}
+                                                </Badge>
+                                            ))}
+                                            {job.job.work_type?.map((type, idx) => (
+                                                <Badge key={idx} variant="secondary" className="bg-slate-100/60 text-slate-600 border-slate-200/40 backdrop-blur-sm shadow-lg">
+                                                    {type}
+                                                </Badge>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Job Details Grid */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="bg-white/60 backdrop-blur-sm border border-white/40 rounded-2xl p-4 shadow-xl">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 bg-blue-500/20 rounded-xl backdrop-blur-sm">
+                                                <SalaryIcon className="w-6 h-6 text-blue-600 drop-shadow-sm" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-slate-600 uppercase tracking-wide font-medium">Salary</p>
+                                                <p className="text-slate-800 font-semibold drop-shadow-sm text-sm">
+                                                    {formatSalary(job.job.salary_details)}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white/60 backdrop-blur-sm border border-white/40 rounded-2xl p-4 shadow-xl">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 bg-purple-500/20 rounded-xl backdrop-blur-sm">
+                                                <LocationIcon className="w-6 h-6 text-purple-600 drop-shadow-sm" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-slate-600 uppercase tracking-wide font-medium">Location</p>
+                                                <p className="text-slate-800 font-semibold drop-shadow-sm text-sm">
+                                                    {formatLocation(job.job.location_details)}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white/60 backdrop-blur-sm border border-white/40 rounded-2xl p-4 shadow-xl">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 bg-pink-500/20 rounded-xl backdrop-blur-sm">
+                                                <UserIcon className="w-6 h-6 text-pink-600 drop-shadow-sm" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-slate-600 uppercase tracking-wide font-medium">Experience</p>
+                                                <p className="text-slate-800 font-semibold drop-shadow-sm text-sm">
+                                                    {formatExperience(job.job.experience_details)}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Actions Section */}
+                            <div className="lg:col-span-1 flex flex-col gap-4">
+                                {/* Status Changer */}
+                                <div className="bg-white/50 backdrop-blur-sm border border-white/40 rounded-2xl p-4 shadow-xl z-[5]">
+                                    <p className="text-xs text-slate-600 uppercase tracking-wide font-medium mb-3">Change Status</p>
+                                    <Select
+                                        value={job.job.status}
+                                        onChange={async (newStatus: any) => {
+                                            try {
+                                                setStatusUpdating(true);
+                                                await JobService.updateJob(job.job.id, (newStatus !== 'published') ? { ...job.job, status: newStatus } : { ...job.job, status: newStatus });
+                                                setJob((prev) => prev ? { ...prev, job: { ...prev.job, status: newStatus } } : prev);
+                                                toast.success('Status Updated', `Job status changed to ${newStatus}`);
+                                            } catch (err) {
+                                                toast.error('Error', 'Failed to update status.');
+                                            } finally {
+                                                setStatusUpdating(false);
+                                            }
+                                        }}
+                                        disabled={deleting || statusUpdating}
+                                        options={[
+                                            { value: 'published', label: 'Published' },
+                                            { value: 'draft', label: 'Draft' },
+                                            { value: 'paused', label: 'Paused' },
+                                            { value: 'closed', label: 'Closed' },
+                                        ]}
+                                        className="text-sm font-medium w-full"
+                                    />
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="space-y-3">
+                                    <Link href={`/jobs/${job.job.id}/dashboard`} className="block">
+                                        <Button
+                                            variant="secondary"
+                                            size="md"
+                                            className="w-full bg-blue-500/90 text-white hover:bg-blue-600 border-0 shadow-xl backdrop-blur-sm font-semibold"
+                                            leftIcon={<ViewIcon className="w-5 h-5" />}
+                                        >
+                                            View Dashboard
+                                        </Button>
+                                    </Link>
+                                    <Link href={`/jobs/${job.job.id}/edit`} className="block">
+                                        <Button
+                                            variant="outline"
+                                            size="md"
+                                            className="w-full bg-emerald-500/90 text-white hover:bg-emerald-600 border-emerald-400/50 shadow-xl backdrop-blur-sm font-semibold"
+                                            leftIcon={<EditIcon className="w-5 h-5" />}
+                                        >
+                                            Edit Job
+                                        </Button>
+                                    </Link>
+                                    <Button
+                                        variant="outline"
+                                        size="md"
+                                        className="w-full bg-red-500/90 text-white hover:bg-red-600 border-red-400/50 shadow-xl backdrop-blur-sm font-semibold"
+                                        onClick={handleDelete}
+                                        disabled={deleting || statusUpdating}
+                                        leftIcon={<DeleteIcon className="w-5 h-5" />}
+                                    >
+                                        {deleting ? 'Deleting...' : 'Delete Job'}
+                                    </Button>
+                                </div>
+                            </div>
                         </div>
-                        <Link href={`/jobs/${job.job.id}/dashboard`}>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                className="bg-white text-blue-600 hover:bg-blue-50"
-                                leftIcon={<ViewIcon className="w-5 h-5" />}
-                            >
-                                View Dashboard
-                            </Button>
-                        </Link>
-                        <Link href={`/jobs/${job.job.id}/edit`}>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                className="bg-green-400 text-white hover:bg-green-400 hover:text-white hover:border-nono"
-                                leftIcon={<EditIcon className="w-5 h-5" />}
-                            >
-                                Edit Job
-                            </Button>
-                        </Link>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="bg-red-500 text-red-100 hover:bg-red-500/80 hover:border-none"
-                            onClick={handleDelete}
-                            disabled={deleting}
-                            leftIcon={<DeleteIcon className="w-5 h-5" />}
-                        >
-                            {deleting ? 'Deleting...' : 'Delete'}
-                        </Button>
+
+                        {/* Subtle light effects */}
+                        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
+                        <div className="absolute top-0 left-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/40 to-transparent"></div>
                     </div>
                 </div>
-            </div>
-
-            {/* Main Job Header Card */}
-            <div className="sizer">
 
                 {/* Stats Section */}
                 <StatsContainer
