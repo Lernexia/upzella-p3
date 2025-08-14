@@ -6,43 +6,6 @@ A modern Next.js 14 application for employers to manage job postings, view appli
 
 The Upzella Employer App is a comprehensive recruitment platform built with Next.js 14, featuring a professional UI/UX design system, job management capabilities, and AI-powered job creation tools. The application provides employers with everything needed to post jobs, manage applications, and streamline their hiring process.
 
-## 🛠 Tech Stack
-
-### Frontend Framework
-- **Next.js 14**: React framework with App Router
-- **TypeScript**: Static type checking
-- **Tailwind CSS**: Utility-first CSS framework
-- **React**: Component-based UI library
-
-### UI/UX Components
-- **Custom Design System**: Upzella-specific component library
-- **SVG Icons**: Custom icon library for consistent branding
-- **Responsive Design**: Mobile-first approach
-- **Professional Themes**: Multiple color schemes and variants
-
-### State Management & Context
-- **React Context**: Authentication and toast notifications
-- **Custom Hooks**: Reusable state logic
-- **Local Storage**: Persistent user preferences
-
-### Backend Integration
-- **Supabase**: Database and authentication
-- **REST APIs**: Job Creation and User Management services
-- **File Uploads**: Resume and company logo handling
-- **Real-time Updates**: Live data synchronization
-
-### Development Tools
-- **ESLint**: Code linting and formatting
-- **PostCSS**: CSS processing and optimization
-- **TypeScript Config**: Strict type checking
-- **Environment Variables**: Secure configuration management
-
-## 📋 Prerequisites
-
-- Node.js 18+
-- npm or yarn
-- Supabase account
-- Backend services running (Job Creation + User Management)
 
 ## 🏗 Getting Started
 
@@ -184,70 +147,7 @@ import { AuthService } from '@/services/auth.service';
 - **Route Protection**: Middleware-based route guards
 - **Session Management**: Persistent login state
 
-## 🚀 Development
-
-### Available Scripts
-
-- **`npm run dev`**: Start development server
-- **`npm run build`**: Create production build
-- **`npm run start`**: Start production server
-- **`npm run lint`**: Run ESLint
-
-### Environment Configuration
-
-**Development**:
-```env
-NODE_ENV=development
-NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321
-NEXT_PUBLIC_JOB_SERVICE_URL=http://localhost:8001
-```
-
-**Production**:
-```env
-NODE_ENV=production
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_JOB_SERVICE_URL=https://your-job-service.com
-```
-
-## 📊 Performance
-
-### Next.js Optimizations
-- **App Router**: Latest routing system
-- **Server Components**: Reduced client bundle
-- **Image Optimization**: Automatic image processing
-- **Code Splitting**: Automatic bundle optimization
-
-## 🧪 Testing & Quality
-
-```bash
-# Run linting
-npm run lint
-
-# Type checking
-npx tsc --noEmit
-
-# Build verification
-npm run build
-```
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-### Other Platforms
-- **Docker**: Containerized deployment
-- **AWS**: EC2, Lambda, or ECS deployment
-- **DigitalOcean**: App Platform deployment
-
 ## 📚 Learn More
-
-### Next.js Resources
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial
-- [Next.js GitHub repository](https://github.com/vercel/next.js)
 
 ### Internal Resources
 - Design System Guide: `UPZELLA_DESIGN_SYSTEM.md`
@@ -262,23 +162,3 @@ Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 4. **API Integration**: Use service layer for all API calls
 5. **Error Handling**: Implement proper error boundaries
 
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Build Failures**:
-- Check TypeScript errors: `npx tsc --noEmit`
-- Verify environment variables
-- Clear Next.js cache: `rm -rf .next`
-
-**Authentication Issues**:
-- Verify Supabase configuration
-- Check JWT token expiration
-- Validate redirect URLs
-
----
-
-**Framework**: Next.js 14 with App Router  
-**UI Library**: Custom Design System + Tailwind CSS  
-**Backend**: Microservices Architecture  
-**Development URL**: `http://localhost:3000`

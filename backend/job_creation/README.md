@@ -63,18 +63,6 @@ The Job Creation Service handles all job-related operations including CRUD opera
    JWT_SECRET=your_jwt_secret
    ```
 
-4. **Run the service:**
-   ```bash
-   # Development
-   npm run dev
-   
-   # Production
-   npm run build
-   npm start
-   
-   # Testing
-   npm test
-   ```
 
 ## � Project Structure
 
@@ -145,27 +133,6 @@ For complete API documentation, see: [Job Creation API Documentation](../../api-
 - **File Upload**: Support for job description document uploads
 - **Data Validation**: Comprehensive input validation using Joi schemas
 
-## 🧪 Testing
-
-Run the test suite:
-
-```bash
-# Run all tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests with coverage
-npm run test:coverage
-```
-
-Test coverage includes:
-- Job creation and validation
-- AI extraction functionality
-- Authentication middleware
-- Error handling scenarios
-- Database operations
 
 ## � Database Schema
 
@@ -226,29 +193,8 @@ Winston logger with multiple transports:
 - File logging (`logs/combined.log`, `logs/error.log`)
 - Structured JSON format for production
 
-## 🤝 Contributing
-
-1. Follow TypeScript best practices
-2. Add tests for new features
-3. Update API documentation
-4. Use conventional commit messages
-5. Ensure all tests pass before submitting
-
-## 📞 Support
-
-For technical issues or questions:
-- Check the API documentation
-- Review the test suite for usage examples
-- Consult the error logs for debugging information
-
 ---
 
 **Service URL**: `http://localhost:8001`  
 **Health Check**: `GET /health`  
 **Documentation**: [API Documentation](../../api-docs-jobcreation.md)
-
-For issues or questions:
-- Check the logs in `logs/` directory
-- Verify Supabase connection and RLS policies
-- Ensure AI API key is valid and has quota
-- Check file permissions for uploads directory

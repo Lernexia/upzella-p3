@@ -161,25 +161,6 @@ The services share a common Supabase database with the following structure:
 
 📋 **Full Schema**: [Database Documentation](./db.md)
 
-## 🧪 Testing
-
-### Run All Tests
-```bash
-# Job Creation Service
-cd job_creation && npm test
-
-# User Management Service  
-cd user_management && npm test
-```
-
-### Test Coverage
-Both services include comprehensive test suites covering:
-- API endpoint functionality
-- Authentication and authorization
-- Data validation
-- Error handling
-- Business logic
-- Database operations
 
 ## 🔒 Security Features
 
@@ -203,40 +184,6 @@ Both services include comprehensive test suites covering:
 - **Security Events**: Login, password changes, profile updates
 - **IP Tracking**: Request origin monitoring
 
-## 🚀 Deployment
-
-### Development Mode
-```bash
-# Start both services
-npm run dev:all
-
-# Or individually
-cd job_creation && npm run dev
-cd user_management && npm run dev
-```
-
-### Production Build
-```bash
-# Build both services
-npm run build:all
-
-# Start production servers
-npm run start:all
-```
-
-### Docker Support
-Each service includes Docker configuration:
-```bash
-# Job Creation Service
-cd job_creation
-docker build -t upzella-job-service .
-docker run -p 8001:8001 upzella-job-service
-
-# User Management Service
-cd user_management
-docker build -t upzella-user-service .
-docker run -p 8002:8002 upzella-user-service
-```
 
 ## 📝 API Documentation
 
@@ -272,54 +219,6 @@ Services communicate through:
 - **Health Endpoints**: Service status monitoring
 - **Database Health**: Connection and query monitoring
 - **External Dependencies**: AI service availability
-
-## 🤝 Contributing
-
-### Development Guidelines
-1. **TypeScript**: Strict typing for all code
-2. **Testing**: Comprehensive test coverage required
-3. **Documentation**: Update API docs for changes
-4. **Security**: Follow security best practices
-5. **Code Quality**: ESLint and Prettier configuration
-
-### Adding New Services
-1. Create service directory in `backend/`
-2. Follow existing service structure
-3. Implement health check endpoint
-4. Add comprehensive README
-5. Update this main README
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Service Won't Start**:
-- Check environment variables
-- Verify database connection
-- Ensure ports aren't in use
-
-**Authentication Failures**:
-- Verify JWT secret consistency
-- Check token expiration
-- Validate Supabase configuration
-
-**AI Service Issues**:
-- Confirm Google Cloud credentials
-- Check API quotas and limits
-- Verify project permissions
-
-### Log Locations
-- Application logs: `{service}/logs/`
-- Error logs: `{service}/logs/error.log`
-- Combined logs: `{service}/logs/combined.log`
-
-## 📞 Support
-
-For technical issues:
-- Check service-specific README files
-- Review API documentation
-- Consult error logs
-- Check database schema documentation
 
 ---
 
