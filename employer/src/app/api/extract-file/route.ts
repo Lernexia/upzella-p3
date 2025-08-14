@@ -59,14 +59,13 @@ export async function POST(request: NextRequest) {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     page.Texts.forEach((textItem: any) => {
                       if (textItem.R && Array.isArray(textItem.R)) {
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         textItem.R.forEach((run: any) => {
                           if (run.T) {
                             try {
                               // Decode URI component and add space
                               const decodedText = decodeURIComponent(run.T);
                               text += decodedText + " ";
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
                             } catch (decodeError: any) {
                               // If decoding fails, use the raw text
                               text += run.T + " ";
@@ -98,6 +97,7 @@ export async function POST(request: NextRequest) {
               }
 
               resolve(text.trim());
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (parseError: any) {
               console.error("PDF content parsing error:", parseError);
               reject(
