@@ -8,7 +8,7 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/no-unused-vars': 'off',
     'prefer-const': 'warn',
     '@typescript-eslint/no-empty-object-type': 'off',
     'react/no-unescaped-entities': 'off',
