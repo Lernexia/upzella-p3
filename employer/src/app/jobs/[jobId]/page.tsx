@@ -294,7 +294,7 @@ export default function JobDetailPage() {
                                 )}
                             </div>
                             <p className="text-xl text-blue-100 font-medium mb-4 drop-shadow">
-                                {job.company.name}
+                                @{job.company.name}
                             </p>
 
                             {/* Job Details Row */}
