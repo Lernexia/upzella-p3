@@ -1,0 +1,46 @@
+{
+  "name": "upzella-crm-services-api",
+  "version": "1.0.0",
+  "description": "Express.js backend for Upzella CRM integration and OAuth management",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "author": "Upzella Team",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.54.0",
+    "axios": "^1.7.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.19.2",
+    "express-rate-limit": "^8.0.1",
+    "helmet": "^7.1.0",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "supertest": "^7.1.4",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^10.0.0",
+    "winston": "^3.14.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^22.5.5",
+    "@types/supertest": "^6.0.3",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@types/uuid": "^10.0.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
+  }
+}
